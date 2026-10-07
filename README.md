@@ -1,16 +1,16 @@
 # Óxido — Rust crash course
 
-A practical course bridging advanced Python, intermediate C#, and C/C++ experience into Rust systems engineering.
+A practical course for an intermediate Python developer learning Rust from the language foundations through resource ownership.
 
 Web course: [lfreirecastello.github.io/oxidando](https://lfreirecastello.github.io/oxidando/)
 
-Teaching reference: [teacher_role.md](teacher_role.md). The experienced-engineer requirements in this course take precedence over its beginner-oriented examples.
+Teaching reference: [teacher_role.md](teacher_role.md). Rust vocabulary is introduced before it is relied upon, with Python comparisons and runnable checkpoints.
 
 ## Course map
 
 | Module | Focus | State |
 | --- | --- | --- |
-| [1 — Ownership](modules/01-ownership/lesson.md) | Ownership, moves, Copy, storage, borrowing | Ready; challenge pending |
+| [1 — Foundations and ownership](modules/01-ownership/lesson.md) | Syntax, variables, common methods, functions, ownership, borrowing | Ready; challenge pending |
 | 2 — Enums and pattern matching | Option, Result, exhaustive matching, `?` | Upcoming |
 | 3 — Traits and generics | Data/behavior separation, bounds, static dispatch | Upcoming |
 | 4 — Smart pointers | Box, Rc, Arc, RefCell, Mutex | Upcoming |
@@ -36,7 +36,7 @@ cp -n modules/01-ownership/challenge.template.rs modules/01-ownership/challenge.
 cp -n modules/01-ownership/reflection.template.md modules/01-ownership/reflection.md
 ```
 
-Requires `rustc`; no dependencies or Cargo workspace are needed yet. Then run from this folder:
+Requires `rustc`; no dependencies or Cargo workspace are needed yet. On a normal installation with a system linker, run from this folder:
 
 ```bash
 mkdir -p /tmp/oxido-rust
@@ -48,4 +48,11 @@ rustc --edition=2024 modules/01-ownership/challenge.rs -o /tmp/oxido-rust/challe
 ```
 
 The initial challenge is intentionally uncompilable. Compiling course files individually keeps that exercise from blocking the working examples.
-# oxidando
+
+In the hosted course workspace, Debian system packages are restricted. Rust's official self-contained target is installed, so use:
+
+```bash
+rustc --edition=2024 --target x86_64-unknown-linux-musl -C linker=rust-lld \
+  modules/01-ownership/examples.rs -o /tmp/oxido-rust/examples
+/tmp/oxido-rust/examples
+```

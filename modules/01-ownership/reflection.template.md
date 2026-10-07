@@ -22,18 +22,18 @@ Your answer:
 
 ## Ownership checks
 
-5. State the three ownership rules. How does cleanup differ from Python/C# GC?
+5. In your own words, what do `let` and `mut` communicate to a reader?
 
 Your answer:
 
-6. Contrast `let b = a` for a u32 and a String. What does clone change?
+6. What is the difference between `String::from(...)` and `value.push_str(...)`?
 
 Your answer:
 
-7. Does moving a String clone its heap bytes? Does stack allocation imply Copy?
+7. Contrast `let b = a` for a `u32` and a `String`. What does `clone()` change?
 
 Your answer:
 
-8. Why can a Python function return a local object while Rust cannot return a borrow of a local String?
+8. Why does borrowing `&customer` let a function inspect the text without taking ownership?
 
 Your answer:

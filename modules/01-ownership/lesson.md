@@ -1,24 +1,254 @@
-# Module 1 — Ownership and the Borrow Checker
+# Module 1 — Rust foundations and ownership
 
-Goal: reason about who owns a resource, which accesses may overlap, and when its memory remains valid. Read this alongside [examples.rs](examples.rs), then attempt [challenge.md](challenge.md).
+Goal: read ordinary Rust without guessing, write small programs, use common text and collection methods, and understand why Rust cares about ownership. Work through [examples.rs](examples.rs), then attempt [challenge.md](challenge.md).
 
-## 1. Ownership replaces implicit lifetime management
+You already know how to program in Python. This lesson focuses on what Rust makes explicit: types, mutability, resource ownership, and the permissions attached to references.
 
-Rust's three ownership rules:
+## 1. How to read a small Rust program
+
+Start with a complete program:
+
+```rust
+fn main() {
+    let language = "Rust";
+    println!("Hello, {language}!");
+}
+```
+
+Expected output:
+
+```text
+Hello, Rust!
+```
+
+New words and symbols:
+
+| Rust | Meaning | Python bridge |
+| --- | --- | --- |
+| `fn` | Defines a function | `def` |
+| `main` | Program entry point | `if __name__ == "__main__":` plays a similar role |
+| `let` | Creates a variable binding | Assignment creates a name |
+| `println!` | Prints a line; `!` marks a macro | `print(...)` is a function |
+| `{name}` | Inserts a value into formatted text | `f"{name}"` |
+| `;` | Ends a statement | Usually a newline in Python |
+| `{ ... }` | Creates a block and a scope | Indentation creates a block |
+
+A **binding** is a name connected to a value. At first, you can read “binding” as “variable.” Rust uses the more precise word because the name may be immutable and because ownership can move from one binding to another.
+
+> Word you just met — **macro**: code that produces other Rust code before normal compilation. For now, use `println!` like Python's `print`; Module 3 explains why the distinction is useful.
+
+## 2. Variables are immutable unless you say `mut`
+
+Python names can always be reassigned:
+
+```python
+count = 10
+count = count + 1
+```
+
+Rust prevents reassignment by default:
+
+```rust
+let count = 10;
+// count = count + 1; // E0384: cannot assign twice
+```
+
+Add `mut`, short for **mutable**, when changing the value is intentional:
+
+```rust
+let mut count = 10;
+count += 1;
+println!("{count}"); // 11
+```
+
+This does not mean Rust values can never change. It means a reader can see which bindings may change without searching the whole program.
+
+### Type inference and annotations
+
+Rust often infers the type:
+
+```rust
+let retries = 3;          // inferred integer
+let ratio = 0.75;         // inferred floating-point number
+let enabled = true;       // bool
+let initial = 'R';        // char uses single quotes
+let label = "ready";      // &str uses double quotes
+```
+
+Add `: Type` when the type is not obvious or when the API contract matters:
+
+```rust
+let retries: u32 = 3;
+let ratio: f64 = 0.75;
+```
+
+Common starter types:
+
+| Rust | Meaning | Python comparison |
+| --- | --- | --- |
+| `i32`, `i64` | Signed integers with fixed widths | `int`, but bounded |
+| `u32`, `usize` | Non-negative integers; `usize` is used for indexes and lengths | `int` |
+| `f64` | 64-bit floating point | `float` |
+| `bool` | `true` or `false` | `bool` |
+| `char` | One Unicode scalar value | A one-character `str` |
+| `&str` | Borrowed text view | No exact equivalent; similar to read-only text access |
+| `String` | Owned, growable UTF-8 text | Closest to Python `str`, but explicitly owned and mutable |
+| `Vec<T>` | Growable sequence containing one type `T` | A typed `list` |
+
+### Shadowing creates a new binding
+
+Repeating `let` creates a new binding with the same name:
+
+```rust
+let input = " 42 ";
+let input = input.trim();
+let input: u32 = input.parse().expect("a number");
+println!("{input}"); // 42
+```
+
+This is **shadowing**. Unlike mutation, it may change the type. Each `input` is a new value; the later binding hides the earlier one.
+
+Use `const` for a value that is fixed for the whole program and known at compile time:
+
+```rust
+const MAX_RETRIES: u32 = 3;
+```
+
+Constants require a type and conventionally use `UPPER_SNAKE_CASE`.
+
+## 3. Associated functions, methods, and useful text operations
+
+These two calls use different syntax:
+
+```rust
+let mut name = String::from("Acme");
+name.push_str(" Labs");
+```
+
+- `String::from(...)` is an **associated function**. `::` looks up something attached to the `String` type. Python's nearest visual comparison is `ClassName.factory(...)`.
+- `name.push_str(...)` is a **method**. The dot calls behavior on an existing value, just like `name.strip()` in Python.
+
+Useful `String` and `str` methods:
+
+| Method | Result | Important detail |
+| --- | --- | --- |
+| `text.len()` | Byte length as `usize` | Not a Unicode character count |
+| `text.is_empty()` | `bool` | Clearer than comparing length with zero |
+| `text.trim()` | Borrowed `&str` without surrounding whitespace | Does not mutate the original |
+| `text.to_lowercase()` | New lowercase `String` | Allocates new text |
+| `text.push('!')` | Adds one `char` | Requires mutable `String` |
+| `text.push_str("...")` | Appends borrowed text | Requires mutable `String` |
+| `text.as_str()` | Borrows a `String` as `&str` | No allocation |
+| `text.parse::<u32>()` | Attempts conversion | Returns `Result`; Module 2 covers errors properly |
+
+Runnable checkpoint:
+
+```rust
+let raw = "  Oxide  ";
+let clean = raw.trim().to_lowercase();
+
+let mut message = String::from("Learning ");
+message.push_str(&clean);
+message.push('!');
+
+println!("{message}");
+```
+
+Expected output:
+
+```text
+Learning oxide!
+```
+
+The `&clean` argument means “borrow `clean` temporarily.” We will make that precise after collections and functions.
+
+## 4. Vectors: Rust's common growable sequence
+
+A vector is written `Vec<T>`, where `T` is the element type:
+
+```rust
+let mut scores: Vec<u32> = vec![10, 20];
+scores.push(30);
+
+println!("count: {}", scores.len());
+println!("first: {:?}", scores.get(0));
+println!("last: {:?}", scores.pop());
+```
+
+Expected output:
+
+```text
+count: 3
+first: Some(10)
+last: Some(30)
+```
+
+`vec![...]` is a convenient macro for creating a vector. The `{:?}` formatter prints a debug representation.
+
+Common methods:
+
+| Method | Meaning | Python bridge |
+| --- | --- | --- |
+| `items.push(value)` | Append | `items.append(value)` |
+| `items.pop()` | Remove the last item, if present | `items.pop()`, but absence is represented safely |
+| `items.len()` | Number of elements | `len(items)` |
+| `items.is_empty()` | Whether length is zero | `not items` |
+| `items.get(index)` | Safe access returning `Option<&T>` | Bounds-checked indexing without an exception |
+| `items.iter()` | Borrow each element | `iter(items)` |
+
+`scores[0]` also works, but panics if the index is invalid. `scores.get(0)` forces the caller to acknowledge that an item may be absent. Module 2 introduces `Option` and `Result`.
+
+Iteration looks familiar:
+
+```rust
+for score in &scores {
+    println!("{score}");
+}
+```
+
+`&scores` borrows the vector, so the loop can read it without taking ownership.
+
+## 5. Functions, parameters, and expressions
+
+Rust writes parameter and return types explicitly:
+
+```rust
+fn add_tax(price: f64, rate: f64) -> f64 {
+    price * (1.0 + rate)
+}
+
+fn main() {
+    let total = add_tax(100.0, 0.19);
+    println!("{total:.2}");
+}
+```
+
+Expected output:
+
+```text
+119.00
+```
+
+The last line in `add_tax` has no semicolon. That makes it an **expression** whose value is returned. Adding a semicolon would turn it into a statement and discard the value.
+
+Python comparison:
+
+```python
+def add_tax(price: float, rate: float) -> float:
+    return price * (1.0 + rate)
+```
+
+You can also write `return value;` in Rust. The final-expression style is common for short functions.
+
+## 6. Ownership: one value, one cleanup responsibility
+
+Now the central Rust rule has enough context to be useful:
 
 1. Every value has an owner.
 2. There is one owner at a time.
 3. When the owner leaves scope, the value is dropped.
 
-Ownership covers memory, files, sockets, and other resources. Module 4 introduces explicit shared ownership through Rc and Arc.
-
-| Familiar mechanism | Rust comparison |
-| --- | --- |
-| Python references; CPython reference counting and cyclic GC | Ordinary ownership and borrowing need no runtime reference counting |
-| C# tracing GC | Compile-time lifetime checks and deterministic resource destruction |
-| C++ RAII | RAII with checked moves and borrows in safe Rust |
-
-Python aliases an existing list:
+Python assignment usually creates another name for the same object:
 
 ```python
 jobs = ["sync"]
@@ -27,205 +257,101 @@ alias.append("report")
 print(jobs)  # ["sync", "report"]
 ```
 
-C# reference-type assignment also aliases:
-
-```csharp
-var jobs = new List<string> { "sync" };
-var alias = jobs;
-alias.Add("report");
-Console.WriteLine(jobs.Count); // 2
-```
-
-Rust transfers ownership:
+A Rust `String` assignment transfers ownership:
 
 ```rust
-let jobs = vec![String::from("sync")];
-let mut transferred = jobs;
-transferred.push(String::from("report"));
-println!("{transferred:?}");
-// println!("{jobs:?}"); // E0382: original binding was moved
+let customer = String::from("Acme");
+let transferred = customer;
+println!("{transferred}");
+// println!("{customer}"); // E0382: customer was moved
 ```
 
-The source becomes unusable so two owners cannot independently destroy the same allocation. Borrow to access temporarily; clone to create independent data.
+The bytes are not automatically deep-copied. Rust invalidates the old binding so only one binding is responsible for cleanup.
 
-Destruction resembles C++ RAII:
-
-```cpp
-{
-    auto resource = std::make_unique<Resource>();
-} // Resource destroyed
-```
-
-```rust
-{
-    let file = std::fs::File::open("/etc/hosts").unwrap();
-} // File dropped; handle closed
-```
-
-`unwrap()` keeps this example focused on ownership; Module 2 introduces deliberate error handling. Ordinary scope exit drops resources. Process abort does not guarantee destructors run. Python context managers and C# using statements explicitly scope resource cleanup; Rust ownership supplies this behavior for resource-owning values.
-
-## 2. Move versus Copy versus Clone
-
-Rust assignment depends on the type, not whether the source happens to live on the stack.
+### Move, Copy, and Clone
 
 ```rust
 let retries: u32 = 3;
-let saved = retries; // Copy
-println!("{retries} {saved}");
+let saved = retries; // Copy: both remain usable
+
+let original = String::from("Acme");
+let duplicate = original.clone(); // explicit independent buffer
+let transferred = original;      // move
+```
+
+- Small value types such as `u32` implement `Copy`; assignment duplicates them cheaply.
+- Resource-owning types such as `String` normally move.
+- `.clone()` explicitly asks the type to duplicate itself. For `String`, this copies the text buffer.
+
+Do not add `.clone()` automatically whenever the compiler reports a move. First ask whether the program really needs two independent owners.
+
+## 7. Borrowing gives temporary access
+
+A **reference** borrows a value without taking ownership. `&` reads as “a reference to.”
+
+```rust
+fn byte_count(text: &str) -> usize {
+    text.len()
+}
 
 let customer = String::from("Acme");
-let transferred = customer; // Move
-println!("{transferred}");
-// customer is no longer usable
+let bytes = byte_count(&customer);
+println!("{customer} has {bytes} bytes");
 ```
 
-C++ std::string assignment commonly copies; moving leaves an existing source object in a valid but unspecified state:
+`customer` remains usable because the function received temporary shared access.
 
-```cpp
-std::string original = "Acme";
-std::string duplicate = original;
-std::string transferred = std::move(original);
-```
-
-Rust requires explicit cloning and invalidates the moved binding:
+A mutable reference uses `&mut` and requires a mutable owner:
 
 ```rust
-let original = String::from("Acme");
-let duplicate = original.clone(); // Independent buffer
-let transferred = original;      // original becomes unusable
+fn mark_ready(text: &mut String) {
+    text.push_str(" | ready");
+}
+
+let mut customer = String::from("Acme");
+mark_ready(&mut customer);
+println!("{customer}");
 ```
 
-`Copy` permits implicit duplication. `Clone` provides explicit duplication; its cost and sharing behavior depend on the type. For String, clone copies the buffer contents. Copy types also implement Clone, and types requiring Drop cannot implement Copy.
-
-Python/C# reference assignments usually introduce another reference rather than duplicating object contents. Rust String assignment introduces neither another shared owner nor a deep copy: it transfers ownership.
-
-## 3. Storage and ownership are separate questions
-
-A typical local String has a pointer, length, and capacity; its bytes occupy a heap allocation.
+Expected output:
 
 ```text
-String metadata                   Heap buffer
-pointer ------------------------> UTF-8 bytes
-length                            "Acme"
-capacity
+Acme | ready
 ```
 
-Moving it transfers buffer ownership without cloning the bytes or requiring a new heap allocation. Exact machine-level placement and copying depend on optimization.
+The practical rule is:
 
-| Rust type | Storage and behavior | Familiar comparison |
-| --- | --- | --- |
-| u64 | Inline scalar; Copy | C++ uint64_t; C# ulong value |
-| [u8; 32] | Inline fixed array; Copy | C++ fixed array, with value semantics |
-| Vec<u64> | Owns contiguous heap elements; moves | C++ vector; C# array element storage |
-| String | Owns a UTF-8 heap buffer; moves | C++ string, with different assignment rules |
-| &str | Borrowed pointer/length view; Copy | C++ string_view, with checked lifetime |
+- Any number of shared references `&T`, or
+- One exclusive mutable reference `&mut T`,
+- But not both while their uses overlap.
 
-Unlike a Python list of Python integers, Vec<u64> stores the numeric values contiguously without a separate object per element.
+This prevents a view into a `String` or `Vec` from being used after a mutation reallocates its buffer.
 
 ```rust
-let literal: &str = "Acme"; // Borrowed static bytes
-let owned = String::from("Acme");
-let view: &str = owned.as_str(); // Borrowed heap bytes
+let mut customer = String::from("Acme");
+let preview = customer.as_str();
+customer.push_str(" | ready"); // rejected if preview is used later
+println!("{preview}");
 ```
 
-Both views have the same type but different underlying storage lifetimes. References do not inherently imply heap storage, and stack storage does not imply Copy.
+The compiler follows the reference to its last use. Your challenge is about recognizing and correcting this overlap without copying the text.
 
-## 4. Borrowing expresses API contracts
+## 8. Run the examples
 
-```rust
-fn inspect(payload: &str) -> usize {
-    payload.len() // UTF-8 bytes, not character count
-}
+From the repository root in this environment:
 
-fn normalize(payload: &mut String) {
-    payload.make_ascii_lowercase();
-}
-
-fn consume(payload: String) {
-    println!("Sending: {payload}");
-} // Function's owned payload is dropped
-
-fn main() {
-    let mut payload = String::from("CUSTOMER CREATED");
-    let bytes = inspect(&payload);
-    normalize(&mut payload);
-    consume(payload);
-    println!("Sent {bytes} bytes");
-    // payload is no longer usable
-}
+```bash
+mkdir -p /tmp/oxido-rust
+rustc --edition=2024 \
+  --target x86_64-unknown-linux-musl \
+  -C linker=rust-lld \
+  modules/01-ownership/examples.rs \
+  -o /tmp/oxido-rust/examples
+/tmp/oxido-rust/examples
 ```
 
-| Contract | Meaning | Polyglot bridge |
-| --- | --- | --- |
-| &T | Temporary shared access | C++ const T&, plus checked lifetime/aliasing |
-| &mut T | Temporary exclusive access | C++ T&, plus exclusivity |
-| T, when non-Copy | Ownership transfer | C++ owning move semantics |
-
-C# ref permits access to caller storage but does not generally prohibit other aliases, so it is not equivalent to &mut. Python object parameters do not express exclusivity either.
-
-For read-only text, prefer &str over &String: literals, slices, and borrowed Strings can all satisfy the contract.
-
-## 5. Aliasing XOR mutability
-
-For a given region while borrows overlap, safe Rust permits either multiple shared references or one exclusive mutable reference. Exclusive access cannot overlap another usable borrow of that region. Disjoint fields can be borrowed separately when the compiler can prove their separation.
-
-Python allows simultaneous read/write aliases:
-
-```python
-jobs = ["sync"]
-reader = jobs
-writer = jobs
-writer.append("report")
-print(reader)  # Observes mutation
-```
-
-Rust rejects this overlapping access:
-
-```rust
-let mut jobs = vec![String::from("sync")];
-let reader = &jobs;
-let writer = &mut jobs; // Rejected: reader is used later
-writer.push(String::from("report"));
-println!("{reader:?}");
-```
-
-This prevents invalidation as well as uncontrolled mutation. C++ can leave a reference dangling after vector reallocation:
-
-```cpp
-std::vector<int> jobs{1};
-const int& first = jobs[0];
-jobs.reserve(jobs.capacity() + 1); // Forces reallocation
-std::cout << first;               // Undefined behavior
-```
-
-Rust rejects the analogous mutation while the element reference remains live:
-
-```rust
-let mut jobs = vec![1];
-let first = &jobs[0];
-jobs.reserve(jobs.capacity() + 1); // Rejected
-println!("{first}");
-```
-
-Python/C# object references generally keep their target objects alive even when a collection changes. C++ references into container storage do not. Rust checks the borrowed element's dependency on its container.
-
-Interior mutability changes how mutation is permitted through shared references; it does not remove access rules. Module 4 covers the runtime checks and synchronization involved.
-
-## 6. Lifetime analysis follows use
-
-Non-lexical lifetimes let a borrow end at its last required use rather than always at the end of the enclosing scope. The compiler rejects references that could outlive their source.
-
-```rust
-fn customer_name() -> &str {
-    let name = String::from("Acme");
-    name.as_str() // Rejected: name is destroyed on return
-}
-```
-
-Returning a Python/C# reference can keep an object alive. A Rust borrow does not extend its owner's lifetime. Returning a C++ reference to this local would leave a dangling reference.
-
-When designing an integration API, decide whether the callee must inspect, mutate, or retain a resource. Borrow for temporary access; transfer ownership when the callee needs to own it. Avoid reflexively cloning just to satisfy the compiler: first examine whether the access contract or ordering is wrong.
+On a normal Rust installation with a system linker, the shorter command in the root README is enough.
 
 ## Your exercise
 
-Proceed to [challenge.md](challenge.md). Edit [challenge.rs](challenge.rs), then complete [reflection.md](reflection.md). Request a review when ready; your attempt stays yours, and the review will focus on both behavior and reasoning.
+Proceed to [challenge.md](challenge.md). Edit your local `challenge.rs`, then complete your local `reflection.md`. The starting program intentionally produces E0502. No solution is included, and your existing learner files are preserved.

@@ -40,6 +40,21 @@ for (const text of requiredChallengeText) {
 }
 
 requireMatch(!html.includes("preview.clone()"), "Challenge must not reveal a clone-based workaround");
+const requiredFoundationText = [
+  "Read your first Rust program",
+  "Variables are stable by default",
+  "Strings, associated functions, and methods",
+  "growable typed sequence",
+  "Functions make types and returns visible",
+  "Ownership decides who cleans up",
+  "Borrow instead of transferring ownership",
+  "Word you just met · binding",
+  "Expected output"
+];
+for (const text of requiredFoundationText) {
+  requireMatch(html.includes(text), `Foundation lesson content missing: ${text}`);
+}
+
 requireMatch(html.includes('name="viewport"'), "Viewport metadata is required");
 requireMatch(html.includes("Skip to lesson"), "Skip link is required");
 requireMatch(html.includes("aria-label=\"Mobile course navigation\""), "Accessible mobile navigation is required");
@@ -48,6 +63,7 @@ requireMatch(css.includes("@media (max-width: 370px)"), "Narrow-phone breakpoint
 requireMatch(css.includes("safe-area-inset"), "Safe-area support is required");
 requireMatch(css.includes("prefers-reduced-motion"), "Reduced-motion support is required");
 requireMatch(css.includes("overflow-x: auto"), "Code overflow containment is required");
+requireMatch(css.includes("min-width: 320px"), "Small-screen width guard is required");
 
 if (failures.length) {
   console.error("Site validation failed:");

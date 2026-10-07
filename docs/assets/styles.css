@@ -236,6 +236,7 @@ main { min-width: 0; }
 .section-heading h2 em { color: var(--copper-light); font-family: var(--display); font-weight: 500; }
 .lesson-section > p, .challenge > p { max-width: 44rem; color: var(--muted); font-size: 1.02rem; }
 .lesson-section > p + p { margin-top: 1.25rem; }
+.lesson-section > h3 { margin: 2.2rem 0 1rem; font-size: 1.15rem; line-height: 1.4; }
 .lesson-section code:not(pre code), .challenge code:not(pre code) { color: var(--copper-light); font-size: .9em; }
 .note { padding-left: 1rem; border-left: 2px solid var(--copper-deep); font-size: .91rem !important; }
 
@@ -253,6 +254,12 @@ main { min-width: 0; }
 .bridge-callout { margin: 1.8rem 0; padding: 1.1rem 1.3rem; border-left: 2px solid var(--copper); border-radius: 0 .8rem .8rem 0; background: var(--surface); }
 .bridge-callout span { display: block; margin-bottom: .3rem; }
 .bridge-callout p { margin: 0; color: var(--muted); font-size: .9rem; }
+.word-callout { margin: 1.5rem 0; padding: 1rem 1.15rem; border: 1px solid rgba(201,120,74,.28); border-radius: .9rem; background: rgba(127,64,38,.09); }
+.word-callout span { display: block; margin-bottom: .35rem; }
+.word-callout p { margin: 0; color: var(--muted); font-size: .9rem; }
+.checkpoint { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: -.7rem 0 1.8rem; padding: .7rem 1rem; border: 1px solid var(--border); border-radius: 0 0 .8rem .8rem; color: var(--faint); background: rgba(143,170,122,.07); font-size: .7rem; }
+.checkpoint span { font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.checkpoint code { color: var(--sage) !important; font-size: .78rem !important; text-align: right; }
 
 .code-pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .85rem; margin: 1.8rem 0; }
 .code-card.wide { margin: 1.8rem 0; }
@@ -285,6 +292,12 @@ tr:last-child td { border-bottom: 0; }
 .contract-grid article > code { display: block; margin-bottom: 1.5rem; color: var(--copper-light); font-size: 1.15rem; }
 .contract-grid strong { display: block; font-size: .9rem; }
 .contract-grid p { margin: .5rem 0 0; color: var(--faint); font-size: .76rem; }
+.method-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin: 1.8rem 0; }
+.method-grid article { min-width: 0; padding: 1rem 1.05rem; border: 1px solid var(--border); border-radius: .9rem; background: var(--surface); }
+.method-grid code { display: block; color: var(--copper-light); font-size: .78rem; overflow-wrap: anywhere; }
+.method-grid strong { display: block; margin-top: .65rem; font-size: .86rem; }
+.method-grid p { margin: .35rem 0 0; color: var(--faint); font-size: .75rem; line-height: 1.55; }
+.compact-methods { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .borrow-timeline { margin: 1.8rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--inset); font-family: var(--mono); font-size: .68rem; }
 .borrow-timeline header { display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 1px solid var(--border); color: var(--faint); text-transform: uppercase; }
@@ -362,7 +375,7 @@ a, button, summary, .module-card { transition: color .2s cubic-bezier(.4,0,.2,1)
   .module-status { align-items: flex-start; flex-direction: column; }
   .lesson-section { padding-bottom: 4.3rem; }
   .section-heading h2, .challenge h2 { font-size: 2rem; }
-  .rule-grid, .contract-grid, .code-pair, .challenge-grid { grid-template-columns: 1fr; }
+  .rule-grid, .contract-grid, .code-pair, .challenge-grid, .method-grid, .compact-methods { grid-template-columns: 1fr; }
   .rule-grid li { min-height: 0; }
   .rule-grid span { margin-bottom: .8rem; }
   .memory-diagram { grid-template-columns: 1fr; }
@@ -376,6 +389,8 @@ a, button, summary, .module-card { transition: color .2s cubic-bezier(.4,0,.2,1)
   td:last-child { border-bottom: 0; }
   .code-card pre, .challenge pre { font-size: .78rem; line-height: 1.75; }
   .code-card header { flex-wrap: wrap; }
+  .checkpoint { align-items: flex-start; flex-direction: column; margin-top: -.5rem; }
+  .checkpoint code { text-align: left; }
   .challenge { padding: 1.25rem; border-radius: 1.1rem; }
   .diagnostic-code { top: .4rem; right: .8rem; }
   .challenge-grid { gap: .75rem; }
