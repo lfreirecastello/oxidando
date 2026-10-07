@@ -2,6 +2,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const root = resolve(import.meta.dirname, "..");
+const entry = readFileSync(resolve(root, "index.html"), "utf8");
 const html = readFileSync(resolve(root, "docs/index.html"), "utf8");
 const css = readFileSync(resolve(root, "docs/assets/styles.css"), "utf8");
 const failures = [];
@@ -21,6 +22,9 @@ requireMatch(missingFragments.length === 0, `Missing fragment targets: ${[...new
 for (const asset of ["docs/assets/styles.css", "docs/assets/app.js", "docs/.nojekyll"]) {
   requireMatch(existsSync(resolve(root, asset)), `Missing site asset: ${asset}`);
 }
+
+requireMatch(entry.includes('url=docs/'), "Root Pages entry point must redirect to the static course");
+requireMatch(entry.includes('href="docs/"'), "Root Pages entry point requires a usable fallback link");
 
 const requiredChallengeText = [
   "let mut customer = String::from(\"Acme\");",
