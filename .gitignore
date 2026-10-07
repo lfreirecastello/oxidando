@@ -4,3 +4,7 @@
 AGENTS.md
 PROGRESS.md
 .superdesign/
+
+# Learner attempts and reflections stay local; publish only their templates.
+modules/*/challenge.rs
+modules/*/reflection.md

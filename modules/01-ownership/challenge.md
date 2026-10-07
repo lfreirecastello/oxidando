@@ -2,7 +2,7 @@
 
 An integration previews a customer record, then prepares its payload for transmission.
 
-Compile `challenge.rs` using the command in the root README. The initial code should produce **E0502**: a mutable borrow conflicts with a live immutable borrow.
+Create your local `challenge.rs` from `challenge.template.rs` if needed, then compile it using the command in the root README. The initial code should produce **E0502**: a mutable borrow conflicts with a live immutable borrow.
 
 ```bash
 rustc --explain E0502

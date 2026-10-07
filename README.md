@@ -29,7 +29,14 @@ Reviews inspect your actual files, validate behavior where tooling is available,
 
 ## Running Module 1
 
-Requires `rustc`; no dependencies or Cargo workspace are needed yet. Run from this folder:
+Learner attempts and reflections are local-only. On a fresh clone, create them from the public templates:
+
+```bash
+cp -n modules/01-ownership/challenge.template.rs modules/01-ownership/challenge.rs
+cp -n modules/01-ownership/reflection.template.md modules/01-ownership/reflection.md
+```
+
+Requires `rustc`; no dependencies or Cargo workspace are needed yet. Then run from this folder:
 
 ```bash
 mkdir -p /tmp/oxido-rust
