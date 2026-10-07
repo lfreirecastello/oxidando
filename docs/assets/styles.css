@@ -237,7 +237,11 @@ main { min-width: 0; }
 [data-rust-level="intermediate"] .level-intermediate,
 [data-rust-level="advanced"] .level-intermediate,
 [data-rust-level="advanced"] .level-advanced { display: block; }
+[data-rust-level="basic"] .level-basic { display: block; }
 [data-rust-level="advanced"] .level-advanced { border-color: rgba(201,120,74,.38); background: rgba(127,64,38,.1); }
+.vocabulary-list { display: grid; gap: .65rem; margin: .8rem 0 0; padding: 0; list-style: none; }
+.vocabulary-list li { color: var(--muted); font-size: .86rem; }
+.vocabulary-list code, .vocabulary-list strong { color: var(--copper-light); }
 [data-language-panel] { display: none; }
 [data-bridge-language="python"] [data-language-panel="python"],
 [data-bridge-language="java"] [data-language-panel="java"],

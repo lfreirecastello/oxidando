@@ -158,6 +158,17 @@
           </table>
         </div>
 
+        <aside class="level-detail level-basic" aria-label="Basic Rust explanation of macros">
+          <span class="eyebrow">Basic Rust · what is a macro?</span>
+          <p>A function receives values through a fixed function signature. A <strong>macro</strong> receives Rust syntax and expands it into Rust code before compilation. The final <code>!</code> tells you that <code>println!</code> is a macro call, not a normal function call.</p>
+          <ul class="vocabulary-list">
+            <li><code>println!("Hello, {name}!")</code> — prints a formatted line.</li>
+            <li><code>format!("Hello, {name}!")</code> — creates a formatted <code>String</code>.</li>
+            <li><code>vec![10, 20]</code> — creates a vector from the listed values.</li>
+          </ul>
+          <p>The <code>!</code> does not mean “dangerous” or “not.” You only need to recognize and use these macros for now; writing your own comes later.</p>
+        </aside>
+
         <div class="word-callout"><span class="eyebrow">Word you just met · binding</span><p>A name connected to a value. You can initially read “binding” as “variable.”</p></div>
       </section>
 

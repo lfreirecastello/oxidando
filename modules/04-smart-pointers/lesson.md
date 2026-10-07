@@ -2,9 +2,21 @@
 
 Goal: choose an ownership container deliberately, understand interior mutability, and share state across threads without data races. Work through [examples.rs](examples.rs), then attempt [challenge.md](challenge.md).
 
+## Vocabulary before the code
+
+- The **stack** stores short-lived function data in a fast, structured order. The **heap** stores allocations whose size or lifetime needs more flexibility.
+- A **pointer** is a value that identifies where other data lives. A Rust **reference** such as `&T` is a checked, temporary pointer that does not own the data.
+- A **smart pointer** is an owning container that also applies a policy, such as heap allocation or shared ownership.
+- A **reference count** records how many owners share one allocation.
+- **Interior mutability** means changing inner data through an outer value that is not itself declared `mut`; another mechanism still enforces safe access.
+- A **thread** is an independently scheduled path of execution within a process.
+- A **mutex** allows only one thread at a time to access protected data.
+- A **data race** is overlapping unsynchronized access where at least one access writes. Safe Rust prevents data races.
+- **Atomic** operations coordinate a small shared value, such as a reference count, without being observed halfway through an update.
+
 ## 1. A smart pointer owns data and adds a policy
 
-References such as `&T` borrow; smart pointers usually own. They behave like pointers through `Deref` and run cleanup through `Drop`, while adding a policy such as heap allocation, reference counting, or synchronized access.
+References such as `&T` borrow; smart pointers usually own. Rust automatically lets many smart pointers be used like references and cleans them up when their owner leaves scope. The traits behind those behaviors are named `Deref` and `Drop`; knowing their names is enough for this module.
 
 Python objects, Java objects, and JavaScript objects are normally heap-managed references with garbage collection hidden behind the runtime. Rust asks you to choose the ownership policy where it matters.
 

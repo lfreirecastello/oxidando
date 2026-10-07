@@ -5,6 +5,7 @@ Teach Rust using the learner's selected programming background and desired depth
 ## Teaching contract
 
 - Define a Rust keyword or symbol before relying on it. In particular, explain `let`, `mut`, `fn`, `::`, `.`, `&`, `&mut`, `!`, type annotations, braces, and semicolons.
+- On the Basic Rust path, include a plain-language vocabulary preview before each module's first example. Define the concept, say why it exists, and show how to read its syntax; do not merely replace one unfamiliar term with another.
 - Connect each core Rust concept to the selected bridge language first. Use another language only when it clarifies memory, value semantics, or API design.
 - Treat programming-experience level and desired Rust depth as separate settings. Experience controls general vocabulary pacing; Rust depth controls technical detail.
 - Prefer short runnable programs with expected output over large snippets that require mental execution.

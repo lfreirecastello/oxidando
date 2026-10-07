@@ -35,7 +35,25 @@ New words and symbols:
 
 A **binding** is a name connected to a value. At first, you can read “binding” as “variable.” Rust uses the more precise word because the name may be immutable and because ownership can move from one binding to another.
 
-> Word you just met — **macro**: code that produces other Rust code before normal compilation. For now, use `println!` like Python's `print`; Module 3 explains why the distinction is useful.
+### What is a macro, and why does `println!` end in `!`?
+
+A normal function receives values through a fixed function signature. A **macro** receives Rust syntax and expands it into Rust code before that code is compiled. The `!` tells you that `println!` is a macro invocation rather than an ordinary function call.
+
+Printing benefits from a macro because the format text can contain a varying number of placeholders, and Rust can check those placeholders while compiling:
+
+```rust
+let service = "checkout";
+let attempts = 3;
+println!("{service} took {attempts} attempts");
+```
+
+Expected output:
+
+```text
+checkout took 3 attempts
+```
+
+You do not need to write a macro yet. For now, recognize three common ones by their `!`: `println!` prints a line, `format!` creates a `String`, and `vec!` creates a vector. Their names ending in `!` do **not** mean “dangerous” or “not.”
 
 ## 2. Variables are immutable unless you say `mut`
 

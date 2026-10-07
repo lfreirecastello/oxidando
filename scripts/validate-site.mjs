@@ -58,6 +58,7 @@ for (const [number, page] of Object.entries(modulePages)) {
   for (const language of ["python", "java", "javascript"]) {
     requireMatch(page.includes(`data-language-panel="${language}"`), `Module ${number} is missing its ${language} bridge`);
   }
+  requireMatch(page.includes("Basic Rust · words before code"), `Module ${number} is missing its basic vocabulary preview`);
 }
 
 const moduleContracts = {
@@ -93,6 +94,11 @@ requireMatch(html.includes("data-course-page"), "Course page must activate profi
 requireMatch(html.includes('id="adjust-path"'), "Course page must let learners adjust their path");
 requireMatch(html.includes("level-intermediate") && html.includes("level-advanced"), "Course must include selectable depth content");
 requireMatch(css.includes('[data-rust-level="advanced"]'), "Course CSS must activate advanced depth content");
+requireMatch(css.includes('[data-rust-level="basic"] .level-basic'), "Course CSS must activate basic vocabulary content");
+
+for (const term of ["what is a macro?", "expands it into Rust code", "does not mean “dangerous” or “not.”"]) {
+  requireMatch(html.includes(term), `Module 1 basic macro explanation is missing: ${term}`);
+}
 
 const staticPythonLines = html.split("\n").filter((line) => line.includes("Python"));
 for (const line of staticPythonLines) {

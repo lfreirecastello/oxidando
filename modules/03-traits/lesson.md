@@ -2,6 +2,17 @@
 
 Goal: model domain data with structs, attach behavior with `impl`, define shared contracts with traits, and use generic bounds to make reusable code honest. Work through [examples.rs](examples.rs), then attempt [challenge.md](challenge.md).
 
+## Vocabulary before the code
+
+- A **struct** is a custom type that groups named pieces of data.
+- A **field** is one named piece of that data, such as `service`.
+- A **value** or **instance** is one concrete `Incident` created from the struct definition.
+- An **implementation block**, written `impl`, is where behavior belonging to a type is defined.
+- A **method** is a function whose first parameter is `self`, `&self`, or `&mut self`.
+- A **trait** is a named behavior contract that multiple types may implement.
+- A **generic type parameter**, often named `T`, is a placeholder for a concrete type selected by the caller.
+- A **trait bound** restricts that placeholder to types providing required behavior.
+
 ## 1. Structs give domain data a named shape
 
 ```rust
@@ -39,6 +50,8 @@ impl Incident {
 ```
 
 `Self` means the type currently being implemented. `&self` borrows an instance for reading, `&mut self` borrows it exclusively for mutation, and `self` consumes it. Java and Python put methods inside a class body; JavaScript typically uses a class or prototype. Rust's separate block keeps data layout and behavior visibly distinct.
+
+`new` is an associated function because it has no `self` parameter; call it with `Incident::new(...)`. `close` is a method because it receives `&mut self`; call it with `incident.close()`.
 
 ## 3. A trait is a behavior contract
 

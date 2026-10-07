@@ -56,6 +56,19 @@
         <div class="module-status"><span><i></i><b>Awaiting first attempt</b></span><span>Runnable examples · no dependencies</span></div>
       </section>
 
+      <aside class="level-detail level-basic" aria-label="Basic vocabulary for enums and errors">
+        <span class="eyebrow">Basic Rust · words before code</span>
+        <ul class="vocabulary-list">
+          <li><strong>Enum</strong> — one type with a fixed list of allowed forms.</li>
+          <li><strong>Variant</strong> — one allowed form, such as <code>Queued</code> or <code>Sending</code>.</li>
+          <li><strong>Payload</strong> — data stored inside a variant, such as <code>percent: 40</code>.</li>
+          <li><strong>Pattern</strong> — a description of a value's shape that can give names to its inner data.</li>
+          <li><strong>Match arm</strong> — one <code>pattern =&gt; result</code> branch. Read <code>=&gt;</code> as “then produce.”</li>
+          <li><strong>Exhaustive</strong> — every possible variant is handled.</li>
+          <li><code>T</code> — a placeholder for a type. <code>Option&lt;T&gt;</code> means a value of type <code>T</code> may be present or absent.</li>
+        </ul>
+      </aside>
+
       <section class="lesson-section" id="enums"><header class="section-heading"><p class="eyebrow">01 · State modeling</p><h2>An enum is a <em>closed set of possibilities</em></h2></header>
         <p>Each variant is a valid form of one type, and each form may carry different data. <code>::</code> selects a variant attached to the enum type.</p>
         <article class="code-card wide"><header><span>Rust</span><code>delivery.rs</code><button type="button" data-copy>Copy</button></header><pre><code>enum Delivery {
@@ -70,6 +83,7 @@ let current = Delivery::Sending { percent: 40 };</code></pre></article>
         <div class="bridge-callout" data-language-panel="java"><span class="eyebrow">Java bridge</span><p>This plays the role of a sealed interface with record-like implementations, but Rust declares the complete variant family in one enum.</p></div>
         <div class="bridge-callout" data-language-panel="javascript"><span class="eyebrow">JavaScript bridge</span><p>This resembles objects with a <code>kind</code> field and different payloads. Rust makes the discriminant and payload relationship part of the type.</p></div>
         <div class="word-callout"><span class="eyebrow">Word you just met · variant</span><p>One named possibility of an enum, such as <code>Queued</code> or <code>Sending { percent }</code>.</p></div>
+        <div class="word-callout"><span class="eyebrow">Read the construction</span><p><code>Delivery::Sending { percent: 40 }</code> means: “from the <code>Delivery</code> enum, create the <code>Sending</code> variant and store <code>40</code> in its <code>percent</code> field.”</p></div>
       </section>
 
       <section class="lesson-section" id="match"><header class="section-heading"><p class="eyebrow">02 · Pattern matching</p><h2><code>match</code> unpacks data and covers every case</h2></header>

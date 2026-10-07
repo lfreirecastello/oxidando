@@ -4,6 +4,16 @@ Goal: model a finite set of states, unpack the data carried by each state, and p
 
 The hosted lesson selects Python, Java, or JavaScript comparisons. This source lesson keeps all three bridges together so the design trade-offs remain visible.
 
+## Vocabulary before the code
+
+- An **enum** is one type with a fixed list of allowed forms.
+- A **variant** is one allowed form, such as `Queued` or `Sending`.
+- A **payload** is data stored inside a variant, such as the percentage inside `Sending { percent: 40 }`.
+- A **pattern** describes the shape you expect and gives names to data inside that shape.
+- A **match arm** is one `pattern => result` branch.
+- **Exhaustive** means every possible variant is handled.
+- `T` is a placeholder for a type. Therefore, `Option<T>` means “either a value of type `T` or no value.”
+
 ## 1. An enum is a closed set of possibilities
 
 Rust enum variants may carry different data:
@@ -25,6 +35,8 @@ Construct values with `::`:
 let current = Delivery::Sending { percent: 40 };
 ```
 
+Read this from left to right: “from the `Delivery` enum, create the `Sending` variant and store `40` in its `percent` field.”
+
 ## 2. `match` handles and unpacks every case
 
 ```rust
@@ -39,6 +51,8 @@ fn describe(delivery: Delivery) -> String {
 ```
 
 A **pattern** describes the shape a value must have and can bind its inner fields. `match` is an expression, so each arm produces the returned `String`. It is also exhaustive: adding a variant forces every relevant match to make a decision.
+
+The `=>` symbol separates the pattern on the left from the result to evaluate on the right. It can be read as “then produce.”
 
 Python's `match`, Java's pattern-aware `switch`, and JavaScript's `switch` can express similar control flow. Rust differs by making missed enum variants a compile error rather than a possible production path.
 
