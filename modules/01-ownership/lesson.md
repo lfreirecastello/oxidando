@@ -2,7 +2,7 @@
 
 Goal: read ordinary Rust without guessing, write small programs, use common text and collection methods, and understand why Rust cares about ownership. Work through [examples.rs](examples.rs), then attempt [challenge.md](challenge.md).
 
-You already know how to program in Python. This lesson focuses on what Rust makes explicit: types, mutability, resource ownership, and the permissions attached to references.
+You already know at least one programming language. This lesson focuses on what Rust makes explicit: types, mutability, resource ownership, and the permissions attached to references. The web course adapts its bridge examples to Python, Java, or JavaScript; this source lesson uses Python as the default comparison.
 
 ## 1. How to read a small Rust program
 

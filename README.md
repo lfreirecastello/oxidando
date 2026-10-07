@@ -1,10 +1,20 @@
 # Óxido — Rust crash course
 
-A practical course for an intermediate Python developer learning Rust from the language foundations through resource ownership.
+An adaptive Rust course that bridges from Python, Java, or JavaScript and adjusts explanation depth to the learner's experience and preferred Rust level.
 
 Web course: [lfreirecastello.github.io/oxidando](https://lfreirecastello.github.io/oxidando/)
 
-Teaching reference: [teacher_role.md](teacher_role.md). Rust vocabulary is introduced before it is relied upon, with Python comparisons and runnable checkpoints.
+Teaching reference: [teacher_role.md](teacher_role.md). Rust vocabulary is introduced before it is relied upon, with familiar-language comparisons and runnable checkpoints.
+
+## Course profiles
+
+The GitHub Pages entry screen builds a profile from three browser-only preferences:
+
+- Programming knowledge: Basic, Intermediate, or Advanced
+- Bridge language: Python, Java, or JavaScript
+- Desired Rust level: Basic, Intermediate, or Advanced
+
+The course uses one canonical Rust curriculum. The profile adapts comparison code, vocabulary pace, and depth rather than maintaining separate copies of the lessons. Preferences are stored in `localStorage` and included as URL parameters so a configured path can be bookmarked; no account or personal data is requested.
 
 ## Course map
 

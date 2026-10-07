@@ -5,6 +5,7 @@ const root = resolve(import.meta.dirname, "..");
 const entry = readFileSync(resolve(root, "index.html"), "utf8");
 const html = readFileSync(resolve(root, "docs/index.html"), "utf8");
 const css = readFileSync(resolve(root, "docs/assets/styles.css"), "utf8");
+const profileScript = readFileSync(resolve(root, "docs/assets/profile.js"), "utf8");
 const failures = [];
 
 const requireMatch = (condition, message) => {
@@ -15,16 +16,38 @@ const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
 requireMatch(duplicates.length === 0, `Duplicate HTML ids: ${[...new Set(duplicates)].join(", ")}`);
 
+const entryIds = [...entry.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+const entryDuplicates = entryIds.filter((id, index) => entryIds.indexOf(id) !== index);
+requireMatch(entryDuplicates.length === 0, `Duplicate entry-page ids: ${[...new Set(entryDuplicates)].join(", ")}`);
+
 const fragmentLinks = [...html.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
 const missingFragments = fragmentLinks.filter((fragment) => !ids.includes(fragment));
 requireMatch(missingFragments.length === 0, `Missing fragment targets: ${[...new Set(missingFragments)].join(", ")}`);
 
-for (const asset of ["docs/assets/styles.css", "docs/assets/app.js", "docs/.nojekyll"]) {
+const entryFragments = [...entry.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
+const missingEntryFragments = entryFragments.filter((fragment) => !entryIds.includes(fragment));
+requireMatch(missingEntryFragments.length === 0, `Missing entry-page fragment targets: ${[...new Set(missingEntryFragments)].join(", ")}`);
+
+for (const asset of ["docs/assets/styles.css", "docs/assets/app.js", "docs/assets/profile.js", "docs/.nojekyll"]) {
   requireMatch(existsSync(resolve(root, asset)), `Missing site asset: ${asset}`);
 }
 
-requireMatch(entry.includes('url=docs/'), "Root Pages entry point must redirect to the static course");
-requireMatch(entry.includes('href="docs/"'), "Root Pages entry point requires a usable fallback link");
+requireMatch(entry.includes('id="profile-form"'), "Root Pages entry point must contain the course builder");
+requireMatch(entry.includes('action="docs/"'), "Course builder must submit to the static course");
+for (const language of ["Python", "Java", "JavaScript"]) {
+  requireMatch(entry.includes(`>${language}<`), `Course builder is missing language: ${language}`);
+}
+for (const field of ['name="knowledge"', 'name="language"', 'name="rust"']) {
+  requireMatch(entry.includes(field), `Course builder is missing profile field: ${field}`);
+}
+requireMatch(entry.includes("No account, analytics profile, name, or email is required"), "Course builder must state its privacy boundary");
+requireMatch(profileScript.includes("localStorage"), "Course profile must persist locally in the browser");
+requireMatch(profileScript.includes("URLSearchParams"), "Course profile must support bookmarkable URL parameters");
+requireMatch(!/\b(fetch|XMLHttpRequest|sendBeacon)\b/.test(profileScript), "Course profile must not transmit learner preferences");
+requireMatch(html.includes("data-course-page"), "Course page must activate profile adaptation");
+requireMatch(html.includes('id="adjust-path"'), "Course page must let learners adjust their path");
+requireMatch(html.includes("level-intermediate") && html.includes("level-advanced"), "Course must include selectable depth content");
+requireMatch(css.includes('[data-rust-level="advanced"]'), "Course CSS must activate advanced depth content");
 
 const requiredChallengeText = [
   "let mut customer = String::from(\"Acme\");",

@@ -4,15 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0a0a0a">
-  <meta name="description" content="Óxido: learn Rust foundations and ownership through clear Python comparisons and runnable examples.">
-  <title>Óxido — Rust from Python</title>
+  <meta name="description" content="Óxido: learn Rust foundations and ownership through familiar language comparisons and runnable examples.">
+  <title>Óxido — Adaptive Rust course</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,600;1,500;1,600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/app.js" defer></script>
+  <script src="assets/profile.js" defer></script>
 </head>
-<body>
+<body data-course-page>
   <a class="skip-link" href="#lesson">Skip to lesson</a>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
 
@@ -38,7 +39,7 @@
         </details>
 
         <a class="brand" href="#top" aria-label="Óxido home">Óxido</a>
-        <span class="course-label">Rust from Python</span>
+        <span class="course-label" id="course-language-label">Python → Rust</span>
       </div>
 
       <div class="header-actions">
@@ -99,7 +100,12 @@
     <main id="lesson">
       <section class="hero" id="module-1" aria-labelledby="module-title">
         <p class="section-kicker"><span></span>Module 01 · Foundations + ownership</p>
-        <h1 id="module-title">From Python to Rust, <em>one clear idea at a time.</em></h1>
+        <div class="active-profile" aria-label="Active course path">
+          <span id="active-path">Intermediate Python → Basic Rust</span>
+          <a id="adjust-path" href="../">Adjust path</a>
+        </div>
+        <p class="depth-copy" id="depth-copy">Guided path: every Rust keyword is introduced before use, with full checkpoints.</p>
+        <h1 id="module-title">From <span id="hero-language">Python</span> to Rust, <em>one clear idea at a time.</em></h1>
         <p class="hero-copy">You already know how to program. This module teaches you how to read Rust, create variables, use everyday methods, write functions, and only then understand ownership and borrowing.</p>
 
         <div class="terminal trace-terminal" aria-label="Module learning path">
@@ -163,8 +169,8 @@
 
         <div class="code-pair">
           <article class="code-card">
-            <header><span>Python</span><code>variables.py</code></header>
-            <pre><code>count = 10
+            <header><span data-bridge-name>Python</span><code id="variables-bridge-meta">mutable by default</code></header>
+            <pre><code id="variables-bridge-code">count = 10
 count += 1
 print(count)</code></pre>
           </article>
@@ -219,7 +225,7 @@ println!("{message}");</code></pre>
 
         <div class="bridge-callout">
           <span class="eyebrow">Read the punctuation</span>
-          <p><code>String::from(...)</code> is attached to the <code>String</code> type; <code>::</code> finds it there. <code>message.push_str(...)</code> is a method on an existing value, like <code>text.strip()</code> in Python.</p>
+          <p><code>String::from(...)</code> is attached to the <code>String</code> type; <code>::</code> finds it there. <code>message.push_str(...)</code> is a method on an existing value, like calling a method in <span data-bridge-name>Python</span>.</p>
         </div>
 
         <div class="method-grid">
@@ -241,8 +247,8 @@ println!("{message}");</code></pre>
 
         <div class="code-pair">
           <article class="code-card">
-            <header><span>Python</span><code>scores.py</code></header>
-            <pre><code>scores = [10, 20]
+            <header><span data-bridge-name>Python</span><code>familiar sequence</code></header>
+            <pre><code id="vectors-bridge-code">scores = [10, 20]
 scores.append(30)
 first = scores[0]
 last = scores.pop()</code></pre>
@@ -273,8 +279,8 @@ let last = scores.pop();</code></pre>
         </header>
         <div class="code-pair">
           <article class="code-card">
-            <header><span>Python</span><code>tax.py</code></header>
-            <pre><code>def add_tax(price: float, rate: float) -&gt; float:
+            <header><span data-bridge-name>Python</span><code>familiar function</code></header>
+            <pre><code id="functions-bridge-code">def add_tax(price: float, rate: float) -&gt; float:
     return price * (1.0 + rate)</code></pre>
           </article>
           <article class="code-card">
@@ -303,8 +309,8 @@ let last = scores.pop();</code></pre>
 
         <div class="code-pair">
           <article class="code-card">
-            <header><span>Python · aliases</span><code>names.py</code></header>
-            <pre><code>first = ["Acme"]
+            <header><span><b data-bridge-name>Python</b> · aliases</span><code>familiar references</code></header>
+            <pre><code id="ownership-bridge-code">first = ["Acme"]
 second = first
 second.append("ready")
 print(first)</code></pre>
@@ -359,6 +365,14 @@ println!("{customer} ({bytes} original bytes)");</code></pre>
           <article><code>&amp;mut T</code><strong>Exclusive borrow</strong><p>One writer gets temporary exclusive access.</p></article>
           <article><code>T</code><strong>Owned value</strong><p>The function receives cleanup responsibility.</p></article>
         </div>
+        <aside class="level-detail level-intermediate" aria-label="Intermediate Rust detail">
+          <span class="eyebrow">Intermediate depth · API design</span>
+          <p>Accept <code>&amp;str</code> when a function only needs to inspect text. Accept <code>String</code> when it must retain ownership. The signature communicates allocation and lifetime intent to every caller.</p>
+        </aside>
+        <aside class="level-detail level-advanced" aria-label="Advanced Rust detail">
+          <span class="eyebrow">Advanced depth · capability model</span>
+          <p>Treat <code>&amp;mut T</code> as a temporary exclusive capability, not merely a writable pointer. That exclusivity is what lets safe Rust prevent reference and iterator invalidation without a garbage collector.</p>
+        </aside>
         <p>The compiler prevents a shared view into a <code>String</code> from being used after a mutation could move its buffer. That rule is the focus of the challenge.</p>
       </section>
 
@@ -443,7 +457,7 @@ Payload: Acme | ready</pre>
   </div>
 
   <footer class="site-footer">
-    <span>Óxido · Rust taught from an intermediate Python foundation.</span>
+    <span>Óxido · One Rust course, multiple ways in.</span>
     <a href="https://github.com/lfreirecastello/oxidando">View source files <span aria-hidden="true">↗</span></a>
   </footer>
 </body>
