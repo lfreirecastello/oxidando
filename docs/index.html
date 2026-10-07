@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,600;1,500;1,600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/app.js" defer></script>
-  <script src="assets/profile.js" defer></script>
+  <script src="assets/profile.js?v=2" defer></script>
 </head>
 <body data-course-page>
   <a class="skip-link" href="#lesson">Skip to lesson</a>
@@ -132,7 +132,7 @@
           <p class="eyebrow">01 · Orientation</p>
           <h2>Read your first Rust program</h2>
         </header>
-        <p>Rust uses a few symbols that Python usually hides. Learn these first; the rest of the module will stop looking mysterious.</p>
+        <p id="orientation-bridge-copy">Rust uses a few symbols that Python usually hides. Learn these first; the rest of the module will stop looking mysterious.</p>
 
         <article class="code-card wide">
           <header><span>Rust</span><code>hello.rs</code><button type="button" data-copy aria-label="Copy first Rust program">Copy</button></header>
@@ -146,13 +146,13 @@
 
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Rust</th><th>Meaning</th><th>Python bridge</th></tr></thead>
+            <thead><tr><th>Rust</th><th>Meaning</th><th id="bridge-column-heading">Python bridge</th></tr></thead>
             <tbody>
-              <tr><td data-label="Rust"><code>fn</code></td><td data-label="Meaning">Defines a function</td><td data-label="Python"><code>def</code></td></tr>
-              <tr><td data-label="Rust"><code>let</code></td><td data-label="Meaning">Creates a variable binding</td><td data-label="Python">Assignment creates a name</td></tr>
-              <tr><td data-label="Rust"><code>println!</code></td><td data-label="Meaning">Prints a line; <code>!</code> marks a macro</td><td data-label="Python"><code>print()</code></td></tr>
-              <tr><td data-label="Rust"><code>;</code></td><td data-label="Meaning">Ends a statement</td><td data-label="Python">Usually a newline</td></tr>
-              <tr><td data-label="Rust"><code>{ ... }</code></td><td data-label="Meaning">Creates a block and scope</td><td data-label="Python">Indentation creates a block</td></tr>
+              <tr><td data-label="Rust"><code>fn</code></td><td data-label="Meaning">Defines a function</td><td data-label="Python" data-bridge-glossary="function">def</td></tr>
+              <tr><td data-label="Rust"><code>let</code></td><td data-label="Meaning">Creates a variable binding</td><td data-label="Python" data-bridge-glossary="binding">Assignment creates a name</td></tr>
+              <tr><td data-label="Rust"><code>println!</code></td><td data-label="Meaning">Prints a line; <code>!</code> marks a macro</td><td data-label="Python" data-bridge-glossary="print">print()</td></tr>
+              <tr><td data-label="Rust"><code>;</code></td><td data-label="Meaning">Ends a statement</td><td data-label="Python" data-bridge-glossary="semicolon">Usually a newline</td></tr>
+              <tr><td data-label="Rust"><code>{ ... }</code></td><td data-label="Meaning">Creates a block and scope</td><td data-label="Python" data-bridge-glossary="block">Indentation creates a block</td></tr>
             </tbody>
           </table>
         </div>
@@ -208,7 +208,7 @@ println!("{input}");</code></pre>
           <p class="eyebrow">03 · Everyday text</p>
           <h2>Strings, associated functions, and methods</h2>
         </header>
-        <p>Python has one everyday string type. In Rust, <code>String</code> owns growable text while <code>&amp;str</code> is a borrowed view of text.</p>
+        <p id="strings-bridge-copy">Python has one everyday string type. In Rust, <code>String</code> owns growable text while <code>&amp;str</code> is a borrowed view of text.</p>
 
         <article class="code-card wide">
           <header><span>Rust</span><code>strings.rs</code><button type="button" data-copy aria-label="Copy String example">Copy</button></header>
@@ -243,7 +243,7 @@ println!("{message}");</code></pre>
           <p class="eyebrow">04 · Collections</p>
           <h2><code>Vec&lt;T&gt;</code> is a growable typed sequence</h2>
         </header>
-        <p>A vector resembles a Python list, but every element has the same type. The <code>vec!</code> macro creates one conveniently.</p>
+        <p id="vectors-bridge-copy">A vector resembles a Python list, but every element has the same type. The <code>vec!</code> macro creates one conveniently.</p>
 
         <div class="code-pair">
           <article class="code-card">

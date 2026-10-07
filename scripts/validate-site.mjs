@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { runInNewContext } from "node:vm";
 
 const root = resolve(import.meta.dirname, "..");
 const entry = readFileSync(resolve(root, "index.html"), "utf8");
@@ -48,6 +49,77 @@ requireMatch(html.includes("data-course-page"), "Course page must activate profi
 requireMatch(html.includes('id="adjust-path"'), "Course page must let learners adjust their path");
 requireMatch(html.includes("level-intermediate") && html.includes("level-advanced"), "Course must include selectable depth content");
 requireMatch(css.includes('[data-rust-level="advanced"]'), "Course CSS must activate advanced depth content");
+
+const staticPythonLines = html.split("\n").filter((line) => line.includes("Python"));
+for (const line of staticPythonLines) {
+  requireMatch(line.includes("id=") || line.includes("data-bridge"), `Hard-coded Python reference lacks an adaptation hook: ${line.trim()}`);
+}
+
+const renderProfile = (language) => {
+  const element = (textContent = "Python") => ({
+    textContent,
+    href: "",
+    dataset: {},
+    attributes: {},
+    setAttribute(name, value) { this.attributes[name] = value; }
+  });
+  const neutralDefaults = {
+    "adjust-path": "Adjust path",
+    "depth-copy": "Guided path"
+  };
+  const ids = Object.fromEntries([
+    "course-language-label", "hero-language", "active-path", "adjust-path", "depth-copy",
+    "orientation-bridge-copy", "bridge-column-heading", "strings-bridge-copy", "vectors-bridge-copy",
+    "variables-bridge-meta", "variables-bridge-code", "vectors-bridge-code",
+    "functions-bridge-code", "ownership-bridge-code"
+  ].map((id) => [id, element(neutralDefaults[id] || "Python")]));
+  const coursePage = element();
+  const bridgeNames = [element(), element()];
+  const glossary = ["function", "binding", "print", "semicolon", "block"].map((key) => {
+    const node = element();
+    node.dataset.bridgeGlossary = key;
+    node.attributes["data-label"] = "Python";
+    return node;
+  });
+  const document = {
+    title: "",
+    querySelector(selector) {
+      if (selector === "#profile-form") return null;
+      if (selector === "[data-course-page]") return coursePage;
+      return selector.startsWith("#") ? ids[selector.slice(1)] : null;
+    },
+    querySelectorAll(selector) {
+      if (selector === "[data-bridge-name]") return bridgeNames;
+      if (selector === "[data-bridge-glossary]") return glossary;
+      return [];
+    }
+  };
+  runInNewContext(profileScript, {
+    document,
+    window: { location: { search: `?knowledge=intermediate&language=${language}&rust=basic` } },
+    localStorage: { getItem: () => null, setItem: () => {} },
+    URLSearchParams,
+    FormData,
+    JSON,
+    Object
+  });
+  return [document.title, ...Object.values(ids).map((node) => node.textContent),
+    ...bridgeNames.map((node) => node.textContent),
+    ...glossary.flatMap((node) => [node.textContent, node.attributes["data-label"]])].join("\n");
+};
+
+const javaProfile = renderProfile("java");
+requireMatch(javaProfile.includes("Java to Rust"), "Java profile title did not adapt");
+requireMatch(javaProfile.includes("System.out.println()") && javaProfile.includes("ArrayList"), "Java comparison content did not adapt");
+requireMatch(!javaProfile.includes("Python"), "Java profile still contains a Python reference");
+
+const javascriptProfile = renderProfile("javascript");
+requireMatch(javascriptProfile.includes("JavaScript to Rust"), "JavaScript profile title did not adapt");
+requireMatch(javascriptProfile.includes("console.log()"), "JavaScript comparison content did not adapt");
+requireMatch(!javascriptProfile.includes("Python"), "JavaScript profile still contains a Python reference");
+
+const pythonProfile = renderProfile("python");
+requireMatch(pythonProfile.includes("Python to Rust") && pythonProfile.includes("print()"), "Python comparison content did not render");
 
 const requiredChallengeText = [
   "let mut customer = String::from(\"Acme\");",

@@ -116,6 +116,16 @@
 
   const bridges = {
     python: {
+      orientation: "Rust uses a few symbols that Python usually hides. Learn these first; the rest of the module will stop looking mysterious.",
+      stringsCopy: "Python has one everyday string type. Rust separates owned, growable String from a borrowed text view, &str.",
+      vectorsCopy: "A vector resembles a Python list, but every element has the same type. The vec! macro creates one conveniently.",
+      glossary: {
+        function: "def",
+        binding: "Assignment creates a name",
+        print: "print()",
+        semicolon: "Usually a newline",
+        block: "Indentation creates a block"
+      },
       variableMeta: "mutable by default",
       variables: "count = 10\ncount += 1\nprint(count)",
       vectors: "scores = [10, 20]\nscores.append(30)\nfirst = scores[0]\nlast = scores.pop()",
@@ -123,6 +133,16 @@
       ownership: "first = [\"Acme\"]\nsecond = first\nsecond.append(\"ready\")\nprint(first)"
     },
     javascript: {
+      orientation: "Rust shares some punctuation with JavaScript, but often gives it stricter meaning. This guide highlights those differences first.",
+      stringsCopy: "JavaScript has primitive strings with automatic memory management. Rust separates owned, growable String from a borrowed text view, &str.",
+      vectorsCopy: "A vector resembles a JavaScript array, but every element has the same type. The vec! macro creates one conveniently.",
+      glossary: {
+        function: "function or an arrow function",
+        binding: "let creates a reassignable binding",
+        print: "console.log()",
+        semicolon: "Often ends a statement",
+        block: "Braces create a block"
+      },
       variableMeta: "let permits reassignment",
       variables: "let count = 10;\ncount += 1;\nconsole.log(count);",
       vectors: "const scores = [10, 20];\nscores.push(30);\nconst first = scores[0];\nconst last = scores.pop();",
@@ -130,6 +150,16 @@
       ownership: "const first = [\"Acme\"];\nconst second = first;\nsecond.push(\"ready\");\nconsole.log(first);"
     },
     java: {
+      orientation: "Rust looks familiar beside Java, but functions can exist outside classes and ownership replaces garbage-collected references. Start with these syntax bridges.",
+      stringsCopy: "Java String values are immutable objects managed by the garbage collector. Rust separates owned, growable String from a borrowed text view, &str.",
+      vectorsCopy: "A vector resembles Java's ArrayList<T>, with contiguous storage and explicit ownership. The vec! macro creates one conveniently.",
+      glossary: {
+        function: "A typed method, without requiring a class",
+        binding: "A typed local declaration or var",
+        print: "System.out.println()",
+        semicolon: "Ends a statement",
+        block: "Braces create a block"
+      },
       variableMeta: "variables may be reassigned",
       variables: "int count = 10;\ncount += 1;\nSystem.out.println(count);",
       vectors: "var scores = new ArrayList<Integer>();\nscores.add(10);\nscores.add(20);\nvar first = scores.get(0);",
@@ -140,6 +170,14 @@
   const bridge = bridges[profile.language];
 
   document.querySelectorAll("[data-bridge-name]").forEach((node) => { node.textContent = bridgeName; });
+  document.querySelector("#orientation-bridge-copy").textContent = bridge.orientation;
+  document.querySelector("#bridge-column-heading").textContent = `${bridgeName} bridge`;
+  document.querySelectorAll("[data-bridge-glossary]").forEach((node) => {
+    node.setAttribute("data-label", bridgeName);
+    node.textContent = bridge.glossary[node.dataset.bridgeGlossary];
+  });
+  document.querySelector("#strings-bridge-copy").textContent = bridge.stringsCopy;
+  document.querySelector("#vectors-bridge-copy").textContent = bridge.vectorsCopy;
   document.querySelector("#variables-bridge-meta").textContent = bridge.variableMeta;
   document.querySelector("#variables-bridge-code").textContent = bridge.variables;
   document.querySelector("#vectors-bridge-code").textContent = bridge.vectors;
