@@ -1,0 +1,6 @@
+.directory
+
+# Local learner and instructor state — never publish.
+AGENTS.md
+PROGRESS.md
+.superdesign/
