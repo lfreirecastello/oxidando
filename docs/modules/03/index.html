@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="Learn Rust structs, implementation blocks, traits, generics, and trait bounds."><title>Óxido — Structs and traits</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,600;1,500;1,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css"><script src="../../assets/app.js" defer></script><script src="../../assets/profile.js?v=3" defer></script>
+</head>
+<body data-course-page data-builder-href="../../../">
+  <a class="skip-link" href="#lesson">Skip to lesson</a><div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+  <header class="site-header"><div class="header-inner"><div class="brand-group">
+    <details class="mobile-menu" id="mobile-menu"><summary aria-label="Open course navigation"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary><nav aria-label="Mobile course navigation" class="mobile-menu-panel"><p class="eyebrow">Module 3 navigation</p><a href="#module-3"><span>Structs and traits</span><small>Ready</small></a><a href="#structs">Structs</a><a href="#impl">impl</a><a href="#traits">Traits</a><a href="#generics">Generics</a><a href="#challenge">E0277 challenge</a><a data-module-link href="../02/">← Module 2</a><a data-module-link href="../04/">Next: Module 4 →</a></nav></details>
+    <a class="brand" data-module-link href="../../" aria-label="Óxido module 1">Óxido</a><span class="course-label" id="course-language-label">Python → Rust</span>
+  </div><div class="header-actions"><div class="header-progress" aria-label="Module reading progress"><span>Reading progress</span><span class="progress-track"><span id="header-progress-bar"></span></span><output id="progress-value">0%</output></div><a class="repo-link" href="https://github.com/lfreirecastello/oxidando" aria-label="Open course repository"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.82a9.6 9.6 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg><span>Repository</span></a></div></div></header>
+  <div class="page-shell" id="top">
+    <aside class="course-sidebar" aria-label="Course map"><div class="sticky-panel"><div class="sidebar-heading"><span>Course map</span><span>03 / 04</span></div><nav class="module-list">
+      <a class="module-card" data-module-link href="../../"><span class="module-meta"><b>01</b><small>Ready</small></span><strong>Foundations + ownership</strong><span>Syntax, methods, move, and borrow</span></a>
+      <a class="module-card" data-module-link href="../02/"><span class="module-meta"><b>02</b><small>Ready</small></span><strong>Enums and errors</strong><span>Option, Result, match, and ?</span></a>
+      <a class="module-card active" href="#module-3"><span class="module-meta"><b>03</b><small>Ready</small></span><strong>Structs and traits</strong><span>Data, behavior, and generics</span></a>
+      <a class="module-card" data-module-link href="../04/"><span class="module-meta"><b>04</b><small>Ready</small></span><strong>Smart pointers</strong><span>Explicit shared ownership</span></a>
+    </nav><nav class="outline" aria-label="Module 3 sections"><p class="eyebrow">In this module</p><a href="#structs">Structs</a><a href="#impl">Implementation blocks</a><a href="#traits">Traits</a><a href="#generics">Generics and bounds</a><a href="#challenge">E0277 challenge</a></nav></div></aside>
+    <main id="lesson">
+      <section class="hero" id="module-3" aria-labelledby="module-title"><p class="section-kicker"><span></span>Module 03 · Structs + traits</p><div class="active-profile" aria-label="Active course path"><span id="active-path">Intermediate Python → Basic Rust</span><a id="adjust-path" href="../../../">Adjust path</a></div><p class="depth-copy" id="depth-copy">Guided path: every Rust keyword is introduced before use, with full checkpoints.</p><h1 id="module-title">Make data concrete and <em>behavior reusable.</em></h1><p class="hero-copy">Structs name domain data. Implementation blocks attach behavior. Traits state the capability that reusable generic code actually needs.</p>
+        <div class="terminal trace-terminal" aria-label="Module learning path"><div class="terminal-bar"><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>module-03.learning-path</span><span class="terminal-state">compiler ready</span></div><div class="trace-lines"><span><b>01</b> shape the domain</span><strong>struct · fields</strong><span><b>02</b> attach behavior</span><strong>impl · self</strong><span><b>03</b> reuse contracts</span><strong>trait · T: Bound</strong></div></div><div class="module-status"><span><i></i><b>Awaiting first attempt</b></span><span>Runnable examples · no dependencies</span></div>
+      </section>
+      <section class="lesson-section" id="structs"><header class="section-heading"><p class="eyebrow">01 · Domain shape</p><h2>A struct gives related fields <em>one named type</em></h2></header><p>Unlike a loose map or object literal, a struct tells the compiler exactly which fields and types form a valid value.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>incident.rs</code><button type="button" data-copy>Copy</button></header><pre><code>struct Incident {
+    id: u32,
+    service: String,
+    open: bool,
+}
+
+let incident = Incident {
+    id: 42,
+    service: String::from("checkout"),
+    open: true,
+};</code></pre></article>
+        <div class="bridge-callout" data-language-panel="python"><span class="eyebrow">Python bridge</span><p>Think of a typed dataclass. Rust requires every field to be initialized and applies ownership rules to each value stored inside.</p></div>
+        <div class="bridge-callout" data-language-panel="java"><span class="eyebrow">Java bridge</span><p>Think of a compact data class or record. Rust keeps the stored fields in the struct and places methods in separate <code>impl</code> blocks.</p></div>
+        <div class="bridge-callout" data-language-panel="javascript"><span class="eyebrow">JavaScript bridge</span><p>It resembles an object with an intended fixed shape, but missing or incorrectly typed properties are compile-time errors rather than conventions.</p></div>
+      </section>
+      <section class="lesson-section" id="impl"><header class="section-heading"><p class="eyebrow">02 · Inherent behavior</p><h2><code>impl</code> attaches functions to your type</h2></header><p><code>Self</code> means the current type. A receiver of <code>&amp;self</code> reads, <code>&amp;mut self</code> mutates through an exclusive borrow, and <code>self</code> consumes the value.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>incident_impl.rs</code></header><pre><code>impl Incident {
+    fn new(id: u32, service: &amp;str) -&gt; Self {
+        Self { id, service: service.to_owned(), open: true }
+    }
+
+    fn close(&amp;mut self) {
+        self.open = false;
+    }
+}</code></pre></article>
+        <div class="contract-grid"><article><code>&amp;self</code><strong>Borrow to read</strong><p>The caller retains ownership.</p></article><article><code>&amp;mut self</code><strong>Borrow to change</strong><p>Exclusive access lasts for the call.</p></article><article><code>self</code><strong>Consume the value</strong><p>The method receives ownership.</p></article></div>
+      </section>
+      <section class="lesson-section" id="traits"><header class="section-heading"><p class="eyebrow">03 · Shared contracts</p><h2>A trait names a capability</h2></header><p>The trait declares what conforming types can do. The implementation connects that contract to a concrete type; it does not inherit stored fields.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>summary.rs</code><button type="button" data-copy>Copy</button></header><pre><code>trait Summary {
+    fn summary(&amp;self) -&gt; String;
+}
+
+impl Summary for Incident {
+    fn summary(&amp;self) -&gt; String {
+        format!("INC-{}: {}", self.id, self.service)
+    }
+}</code></pre></article>
+        <div class="bridge-callout" data-language-panel="python"><span class="eyebrow">Python bridge</span><p>A trait resembles a <code>Protocol</code> or abstract base class, but conformance is compiled into the program rather than discovered through runtime duck typing.</p></div>
+        <div class="bridge-callout" data-language-panel="java"><span class="eyebrow">Java bridge</span><p>A trait is close to an interface with default methods. Rust favors composition and does not use class inheritance for shared state.</p></div>
+        <div class="bridge-callout" data-language-panel="javascript"><span class="eyebrow">JavaScript bridge</span><p>JavaScript often relies on “has this method” conventions. Rust gives that convention a name and checks every implementation and caller.</p></div>
+        <p><code>#[derive(Debug, Clone, PartialEq)]</code> asks the compiler to generate standard trait implementations. Derive mechanical behavior; write an explicit implementation when domain meaning matters.</p>
+      </section>
+      <section class="lesson-section" id="generics"><header class="section-heading"><p class="eyebrow">04 · Honest reuse</p><h2>Generics remove duplication; bounds declare needs</h2></header><p><code>T</code> stands for a concrete type chosen by the caller. <code>T: Summary</code> says that choice must implement <code>Summary</code>, so the function body can safely call its method.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>publish.rs</code></header><pre><code>fn publish&lt;T: Summary&gt;(item: &amp;T) {
+    println!("{}", item.summary());
+}
+
+// Equivalent when several bounds need room:
+fn log&lt;T&gt;(item: &amp;T)
+where
+    T: Summary,
+{
+    println!("{}", item.summary());
+}</code></pre></article>
+        <div class="word-callout"><span class="eyebrow">Word you just met · trait bound</span><p>A compile-time requirement on a generic type. It documents and enforces the capabilities the implementation uses.</p></div>
+        <aside class="level-detail level-intermediate"><span class="eyebrow">Intermediate depth · dispatch</span><p>Generic trait-bounded calls normally use static dispatch: the compiler specializes code for each concrete type. <code>&amp;dyn Summary</code> chooses runtime dynamic dispatch instead.</p></aside>
+        <aside class="level-detail level-advanced"><span class="eyebrow">Advanced depth · trade-off</span><p>Monomorphization removes virtual-call overhead and enables optimization, while potentially increasing code size. Trait objects trade some runtime indirection for heterogeneous storage and smaller call-site code.</p></aside>
+      </section>
+      <section class="challenge" id="challenge" aria-labelledby="challenge-title"><span class="diagnostic-code" aria-hidden="true">E0277</span><div class="challenge-status"><span>Exercise</span><small>Awaiting first attempt</small></div><h2 id="challenge-title">Implement the contract the API requires</h2><p>An <code>Incident</code> reaches a generic publisher without implementing its required <code>Summary</code> trait.</p>
+        <article class="code-card challenge-code"><header><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span><code>Rust · challenge.rs</code><span class="terminal-state">diagnostic present</span></header><pre><code>trait Summary {
+    fn summary(&amp;self) -&gt; String;
+}
+
+fn publish&lt;T: Summary&gt;(item: &amp;T) {
+    println!("{}", item.summary());
+}
+
+// Incident has fields, but no Summary implementation.
+publish(&amp;incident);</code></pre></article>
+        <div class="challenge-grid"><div><h3>Required output after your fix</h3><pre>Incident INC-42: checkout unavailable</pre></div><div><h3>Constraints</h3><ul><li>Keep <code>publish</code> generic and bounded.</li><li>Implement <code>Summary</code> for <code>Incident</code>.</li><li>Use all three fields.</li><li>No direct print from main or unsafe.</li></ul></div></div>
+        <div class="workflow"><p class="eyebrow">Local workflow</p><ol><li>Copy the public challenge and reflection templates.</li><li>Compile and read E0277.</li><li>Implement the missing contract locally.</li><li>Explain the bound in <code>reflection.md</code>.</li></ol></div><a class="primary-action" href="https://github.com/lfreirecastello/oxidando/blob/main/modules/03-traits/challenge.template.rs">Open exercise template on GitHub <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+    <aside class="context-sidebar" aria-label="Current module context"><div class="sticky-panel"><section class="context-card"><p class="eyebrow">Learning path</p><ul><li><span>Shape data</span><small>struct</small></li><li><span>Attach behavior</span><small>impl</small></li><li><span>Name capability</span><small>trait</small></li><li><span>Constrain reuse</span><small>bound</small></li></ul></section><section class="context-card"><div class="sidebar-heading"><span>Course progress</span><span>3 / 4</span></div><div class="course-progress progress-75"><span></span></div><p>Module 3 turns object conventions into compiler-verified contracts.</p></section><section class="next-action"><p class="eyebrow">Next action</p><p>Run <code>examples.rs</code>, then compile the E0277 challenge.</p></section></div></aside>
+  </div><footer class="site-footer"><a data-module-link href="../02/">← Module 2</a><a data-module-link href="../04/">Continue to Module 4 →</a></footer>
+</body></html>

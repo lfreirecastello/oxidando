@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="Learn Rust enums, pattern matching, Option, Result, and error propagation.">
+  <title>Óxido — Enums and errors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,600;1,500;1,600&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles.css">
+  <script src="../../assets/app.js" defer></script>
+  <script src="../../assets/profile.js?v=3" defer></script>
+</head>
+<body data-course-page data-builder-href="../../../">
+  <a class="skip-link" href="#lesson">Skip to lesson</a>
+  <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
+  <header class="site-header"><div class="header-inner">
+    <div class="brand-group">
+      <details class="mobile-menu" id="mobile-menu"><summary aria-label="Open course navigation"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></summary>
+        <nav aria-label="Mobile course navigation" class="mobile-menu-panel">
+          <p class="eyebrow">Module 2 navigation</p>
+          <a href="#module-2"><span>Enums and errors</span><small>Ready</small></a>
+          <a href="#enums">Enums</a><a href="#match">Match</a><a href="#option">Option</a><a href="#result">Result and ?</a><a href="#challenge">E0004 challenge</a><a data-module-link href="../../">← Module 1</a><a data-module-link href="../03/">Next: Module 3 →</a>
+        </nav>
+      </details>
+      <a class="brand" data-module-link href="../../" aria-label="Óxido module 1">Óxido</a>
+      <span class="course-label" id="course-language-label">Python → Rust</span>
+    </div>
+    <div class="header-actions"><div class="header-progress" aria-label="Module reading progress"><span>Reading progress</span><span class="progress-track"><span id="header-progress-bar"></span></span><output id="progress-value">0%</output></div>
+      <a class="repo-link" href="https://github.com/lfreirecastello/oxidando" aria-label="Open course repository"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.87c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.35 1.09 2.92.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.82a9.6 9.6 0 0 1 2.5.34c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg><span>Repository</span></a>
+    </div>
+  </div></header>
+
+  <div class="page-shell" id="top">
+    <aside class="course-sidebar" aria-label="Course map"><div class="sticky-panel">
+      <div class="sidebar-heading"><span>Course map</span><span>02 / 04</span></div>
+      <nav class="module-list">
+        <a class="module-card" data-module-link href="../../"><span class="module-meta"><b>01</b><small>Ready</small></span><strong>Foundations + ownership</strong><span>Syntax, methods, move, and borrow</span></a>
+        <a class="module-card active" href="#module-2"><span class="module-meta"><b>02</b><small>Ready</small></span><strong>Enums and errors</strong><span>Option, Result, match, and ?</span></a>
+        <a class="module-card" data-module-link href="../03/"><span class="module-meta"><b>03</b><small>Ready</small></span><strong>Structs and traits</strong><span>Data, behavior, and generics</span></a>
+        <a class="module-card" data-module-link href="../04/"><span class="module-meta"><b>04</b><small>Ready</small></span><strong>Smart pointers</strong><span>Explicit shared ownership</span></a>
+      </nav>
+      <nav class="outline" aria-label="Module 2 sections"><p class="eyebrow">In this module</p><a href="#enums">Closed state models</a><a href="#match">Exhaustive match</a><a href="#option">Option</a><a href="#result">Result and ?</a><a href="#challenge">E0004 challenge</a></nav>
+    </div></aside>
+
+    <main id="lesson">
+      <section class="hero" id="module-2" aria-labelledby="module-title">
+        <p class="section-kicker"><span></span>Module 02 · Enums + errors</p>
+        <div class="active-profile" aria-label="Active course path"><span id="active-path">Intermediate Python → Basic Rust</span><a id="adjust-path" href="../../../">Adjust path</a></div>
+        <p class="depth-copy" id="depth-copy">Guided path: every Rust keyword is introduced before use, with full checkpoints.</p>
+        <h1 id="module-title">Make every possible state <em>visible in the type.</em></h1>
+        <p class="hero-copy">Enums model states, patterns open them, and <code>Option</code> and <code>Result</code> turn absence and failure into ordinary values the compiler can check.</p>
+        <div class="terminal trace-terminal" aria-label="Module learning path"><div class="terminal-bar"><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>module-02.learning-path</span><span class="terminal-state">compiler ready</span></div><div class="trace-lines"><span><b>01</b> model the states</span><strong>enum · variants</strong><span><b>02</b> handle the shapes</span><strong>match · patterns</strong><span><b>03</b> represent failure</span><strong>Option · Result · ?</strong></div></div>
+        <div class="module-status"><span><i></i><b>Awaiting first attempt</b></span><span>Runnable examples · no dependencies</span></div>
+      </section>
+
+      <section class="lesson-section" id="enums"><header class="section-heading"><p class="eyebrow">01 · State modeling</p><h2>An enum is a <em>closed set of possibilities</em></h2></header>
+        <p>Each variant is a valid form of one type, and each form may carry different data. <code>::</code> selects a variant attached to the enum type.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>delivery.rs</code><button type="button" data-copy>Copy</button></header><pre><code>enum Delivery {
+    Queued,
+    Sending { percent: u8 },
+    Delivered(String),
+    Failed(String),
+}
+
+let current = Delivery::Sending { percent: 40 };</code></pre></article>
+        <div class="bridge-callout" data-language-panel="python"><span class="eyebrow">Python bridge</span><p>Think of a union of dataclasses. Rust puts every legal shape under one enum and verifies every use without relying on runtime conventions.</p></div>
+        <div class="bridge-callout" data-language-panel="java"><span class="eyebrow">Java bridge</span><p>This plays the role of a sealed interface with record-like implementations, but Rust declares the complete variant family in one enum.</p></div>
+        <div class="bridge-callout" data-language-panel="javascript"><span class="eyebrow">JavaScript bridge</span><p>This resembles objects with a <code>kind</code> field and different payloads. Rust makes the discriminant and payload relationship part of the type.</p></div>
+        <div class="word-callout"><span class="eyebrow">Word you just met · variant</span><p>One named possibility of an enum, such as <code>Queued</code> or <code>Sending { percent }</code>.</p></div>
+      </section>
+
+      <section class="lesson-section" id="match"><header class="section-heading"><p class="eyebrow">02 · Pattern matching</p><h2><code>match</code> unpacks data and covers every case</h2></header>
+        <p>A pattern describes a value's shape. Names inside it bind the carried data. Every arm returns the same result type, making the entire <code>match</code> an expression.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>describe.rs</code></header><pre><code>fn describe(delivery: Delivery) -&gt; String {
+    match delivery {
+        Delivery::Queued =&gt; String::from("queued"),
+        Delivery::Sending { percent } =&gt; format!("sending: {percent}%"),
+        Delivery::Delivered(id) =&gt; format!("delivered: {id}"),
+        Delivery::Failed(reason) =&gt; format!("failed: {reason}"),
+    }
+}</code></pre></article>
+        <div class="checkpoint"><span>For Sending { percent: 40 }</span><code>sending: 40%</code></div>
+        <p>Exhaustiveness turns a changed state model into a to-do list from the compiler. Use <code>_</code> only when every remaining case truly shares one meaning; a wildcard can hide new variants.</p>
+        <aside class="level-detail level-intermediate"><span class="eyebrow">Intermediate depth · refactoring</span><p>Adding a variant deliberately breaks every exhaustive decision point. That friction is valuable when those sites encode business rules.</p></aside>
+        <aside class="level-detail level-advanced"><span class="eyebrow">Advanced depth · representation</span><p>An enum is a tagged union: a discriminant identifies the active variant, and enough storage is reserved for its largest payload, subject to layout optimizations.</p></aside>
+      </section>
+
+      <section class="lesson-section" id="option"><header class="section-heading"><p class="eyebrow">03 · Explicit absence</p><h2><code>Option&lt;T&gt;</code> means “a value may be missing”</h2></header>
+        <p><code>Some(T)</code> carries a value and <code>None</code> represents absence. An ordinary <code>T</code> cannot silently become null.</p>
+        <div class="code-pair">
+          <article class="code-card" data-language-panel="python"><header><span>Python</span><code>optional value</code></header><pre><code>def first(items: list[str]) -&gt; str | None:
+    return items[0] if items else None</code></pre></article>
+          <article class="code-card" data-language-panel="java"><header><span>Java</span><code>optional value</code></header><pre><code>Optional&lt;String&gt; first(List&lt;String&gt; items) {
+    return items.stream().findFirst();
+}</code></pre></article>
+          <article class="code-card" data-language-panel="javascript"><header><span>JavaScript</span><code>optional value</code></header><pre><code>function first(items) {
+  return items.at(0); // value or undefined
+}</code></pre></article>
+          <article class="code-card"><header><span>Rust</span><code>optional value</code></header><pre><code>fn first(items: &amp;[String]) -&gt; Option&lt;&amp;str&gt; {
+    items.first().map(String::as_str)
+}</code></pre></article>
+        </div>
+        <div class="method-grid compact-methods"><article><code>.map(f)</code><strong>Transform Some</strong></article><article><code>.and_then(f)</code><strong>Chain optional work</strong></article><article><code>.unwrap_or(v)</code><strong>Supply a default</strong></article><article><code>.ok_or(e)</code><strong>Convert to Result</strong></article></div>
+      </section>
+
+      <section class="lesson-section" id="result"><header class="section-heading"><p class="eyebrow">04 · Recoverable failure</p><h2><code>Result&lt;T, E&gt;</code> exposes success and failure</h2></header>
+        <p><code>Ok(T)</code> carries success and <code>Err(E)</code> carries a recoverable error. The signature tells every caller that failure is expected.</p>
+        <article class="code-card wide"><header><span>Rust</span><code>config.rs</code><button type="button" data-copy>Copy</button></header><pre><code>fn parse_port(raw: &amp;str) -&gt; Result&lt;u16, std::num::ParseIntError&gt; {
+    raw.trim().parse::&lt;u16&gt;()
+}
+
+fn endpoint(raw: &amp;str) -&gt; Result&lt;String, std::num::ParseIntError&gt; {
+    let port = parse_port(raw)?;
+    Ok(format!("127.0.0.1:{port}"))
+}</code></pre></article>
+        <div class="checkpoint"><span><code>endpoint(" 8080 ")</code></span><code>Ok("127.0.0.1:8080")</code></div>
+        <div class="bridge-callout" data-language-panel="python"><span class="eyebrow">Python bridge</span><p>Python usually raises an exception. <code>Result</code> instead makes the failure channel part of the returned value and the static signature.</p></div>
+        <div class="bridge-callout" data-language-panel="java"><span class="eyebrow">Java bridge</span><p>Think of a typed success/error return rather than a checked or unchecked exception. Callers handle it through values and patterns.</p></div>
+        <div class="bridge-callout" data-language-panel="javascript"><span class="eyebrow">JavaScript bridge</span><p>JavaScript may throw or reject a Promise. Rust's <code>Result</code> keeps the error path explicit even for synchronous code.</p></div>
+        <div class="word-callout"><span class="eyebrow">Read the symbol · ?</span><p>Extract the success value and continue, or return the compatible error immediately. It propagates; it does not catch.</p></div>
+      </section>
+
+      <section class="challenge" id="challenge" aria-labelledby="challenge-title"><span class="diagnostic-code" aria-hidden="true">E0004</span><div class="challenge-status"><span>Exercise</span><small>Awaiting first attempt</small></div><h2 id="challenge-title">Handle the state the compiler found</h2><p>The formatter omits <code>Sending</code>, so the match is non-exhaustive. Repair the state model without hiding future variants.</p>
+        <article class="code-card challenge-code"><header><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span><code>Rust · challenge.rs</code><span class="terminal-state">diagnostic present</span></header><pre><code>fn status_text(status: Delivery) -&gt; String {
+    match status {
+        Delivery::Queued =&gt; String::from("queued"),
+        Delivery::Delivered(id) =&gt; format!("delivered: {id}"),
+        Delivery::Failed(reason) =&gt; format!("failed: {reason}"),
+    }
+}</code></pre></article>
+        <div class="challenge-grid"><div><h3>Required output after your fix</h3><pre>sending: 40%</pre></div><div><h3>Constraints</h3><ul><li>Keep all four variants and <code>match</code>.</li><li>Handle <code>Sending</code> explicitly.</li><li>Use its <code>percent</code> data.</li><li>No wildcard, hardcoded output, or unsafe.</li></ul></div></div>
+        <div class="workflow"><p class="eyebrow">Local workflow</p><ol><li>Copy the public challenge and reflection templates.</li><li>Compile and read E0004.</li><li>Edit your local <code>challenge.rs</code>.</li><li>Explain exhaustiveness in <code>reflection.md</code>.</li></ol></div>
+        <a class="primary-action" href="https://github.com/lfreirecastello/oxidando/blob/main/modules/02-enums/challenge.template.rs">Open exercise template on GitHub <span aria-hidden="true">↗</span></a>
+      </section>
+    </main>
+
+    <aside class="context-sidebar" aria-label="Current module context"><div class="sticky-panel"><section class="context-card"><p class="eyebrow">Learning path</p><ul><li><span>Model states</span><small>enum</small></li><li><span>Open values</span><small>match</small></li><li><span>Handle absence</span><small>Option</small></li><li><span>Handle failure</span><small>Result</small></li></ul></section><section class="context-card"><div class="sidebar-heading"><span>Course progress</span><span>2 / 4</span></div><div class="course-progress progress-50"><span></span></div><p>Module 2 turns runtime edge cases into compiler-visible states.</p></section><section class="next-action"><p class="eyebrow">Next action</p><p>Run <code>examples.rs</code>, then compile the E0004 challenge.</p></section></div></aside>
+  </div>
+  <footer class="site-footer"><span>Óxido · One Rust course, multiple ways in.</span><a data-module-link href="../03/">Continue to Module 3 →</a></footer>
+</body>
+</html>

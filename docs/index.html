@@ -11,9 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;family=Playfair+Display:ital,wght@0,600;1,500;1,600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/styles.css">
   <script src="assets/app.js" defer></script>
-  <script src="assets/profile.js?v=2" defer></script>
+  <script src="assets/profile.js?v=3" defer></script>
 </head>
-<body data-course-page>
+<body data-course-page data-builder-href="../">
   <a class="skip-link" href="#lesson">Skip to lesson</a>
   <div class="reading-progress" aria-hidden="true"><span id="reading-progress-bar"></span></div>
 
@@ -35,6 +35,7 @@
             <a href="#ownership">Ownership</a>
             <a href="#borrowing">Borrowing</a>
             <a href="#challenge">E0502 challenge</a>
+            <a data-module-link href="modules/02/">Next: Module 2 <span aria-hidden="true">→</span></a>
           </nav>
         </details>
 
@@ -66,21 +67,21 @@
             <strong>Foundations + ownership</strong>
             <span>Read, write, then reason about resources</span>
           </a>
-          <div class="module-card upcoming">
-            <span class="module-meta"><b>02</b><small>Upcoming</small></span>
+          <a class="module-card" data-module-link href="modules/02/">
+            <span class="module-meta"><b>02</b><small>Ready</small></span>
             <strong>Enums and errors</strong>
             <span>Option, Result, match, and ?</span>
-          </div>
-          <div class="module-card upcoming">
-            <span class="module-meta"><b>03</b><small>Upcoming</small></span>
+          </a>
+          <a class="module-card" data-module-link href="modules/03/">
+            <span class="module-meta"><b>03</b><small>Ready</small></span>
             <strong>Structs and traits</strong>
             <span>Data, behavior, and generics</span>
-          </div>
-          <div class="module-card upcoming">
-            <span class="module-meta"><b>04</b><small>Upcoming</small></span>
+          </a>
+          <a class="module-card" data-module-link href="modules/04/">
+            <span class="module-meta"><b>04</b><small>Ready</small></span>
             <strong>Smart pointers</strong>
             <span>Explicit shared ownership</span>
-          </div>
+          </a>
         </nav>
 
         <nav class="outline" aria-label="Module 1 sections">
@@ -458,7 +459,7 @@ Payload: Acme | ready</pre>
 
   <footer class="site-footer">
     <span>Óxido · One Rust course, multiple ways in.</span>
-    <a href="https://github.com/lfreirecastello/oxidando">View source files <span aria-hidden="true">↗</span></a>
+    <a data-module-link href="modules/02/">Continue to Module 2 <span aria-hidden="true">→</span></a>
   </footer>
 </body>
 </html>

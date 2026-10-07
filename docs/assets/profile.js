@@ -95,6 +95,11 @@
   const course = document.querySelector("[data-course-page]");
   if (!course) return;
 
+  const setText = (selector, value) => {
+    const node = document.querySelector(selector);
+    if (node) node.textContent = value;
+  };
+
   const profile = currentProfile();
   saveProfile(profile);
   course.dataset.knowledgeLevel = profile.knowledge;
@@ -104,15 +109,22 @@
   const query = profileQuery(profile);
   const bridgeName = labels[profile.language];
   document.title = `Óxido — ${bridgeName} to Rust`;
-  document.querySelector("#course-language-label").textContent = `${bridgeName} → Rust`;
-  document.querySelector("#hero-language").textContent = bridgeName;
-  document.querySelector("#active-path").textContent = profileTitle(profile);
-  document.querySelector("#adjust-path").href = `../?${query}`;
-  document.querySelector("#depth-copy").textContent = {
+  setText("#course-language-label", `${bridgeName} → Rust`);
+  setText("#hero-language", bridgeName);
+  setText("#active-path", profileTitle(profile));
+  const adjustPath = document.querySelector("#adjust-path");
+  if (adjustPath) adjustPath.href = `${course.dataset.builderHref || "../"}?${query}`;
+  setText("#depth-copy", {
     basic: "Guided path: every Rust keyword is introduced before use, with full checkpoints.",
     intermediate: "Accelerated path: syntax stays concise while API and ownership reasoning expand.",
     advanced: "Deep path: fundamentals stay available while systems implications take priority."
-  }[profile.rust];
+  }[profile.rust]);
+
+  document.querySelectorAll("[data-module-link]").forEach((link) => {
+    const url = new URL(link.getAttribute("href"), window.location.href);
+    url.search = query;
+    link.href = url.href;
+  });
 
   const bridges = {
     python: {
@@ -170,17 +182,17 @@
   const bridge = bridges[profile.language];
 
   document.querySelectorAll("[data-bridge-name]").forEach((node) => { node.textContent = bridgeName; });
-  document.querySelector("#orientation-bridge-copy").textContent = bridge.orientation;
-  document.querySelector("#bridge-column-heading").textContent = `${bridgeName} bridge`;
+  setText("#orientation-bridge-copy", bridge.orientation);
+  setText("#bridge-column-heading", `${bridgeName} bridge`);
   document.querySelectorAll("[data-bridge-glossary]").forEach((node) => {
     node.setAttribute("data-label", bridgeName);
     node.textContent = bridge.glossary[node.dataset.bridgeGlossary];
   });
-  document.querySelector("#strings-bridge-copy").textContent = bridge.stringsCopy;
-  document.querySelector("#vectors-bridge-copy").textContent = bridge.vectorsCopy;
-  document.querySelector("#variables-bridge-meta").textContent = bridge.variableMeta;
-  document.querySelector("#variables-bridge-code").textContent = bridge.variables;
-  document.querySelector("#vectors-bridge-code").textContent = bridge.vectors;
-  document.querySelector("#functions-bridge-code").textContent = bridge.functions;
-  document.querySelector("#ownership-bridge-code").textContent = bridge.ownership;
+  setText("#strings-bridge-copy", bridge.stringsCopy);
+  setText("#vectors-bridge-copy", bridge.vectorsCopy);
+  setText("#variables-bridge-meta", bridge.variableMeta);
+  setText("#variables-bridge-code", bridge.variables);
+  setText("#vectors-bridge-code", bridge.vectors);
+  setText("#functions-bridge-code", bridge.functions);
+  setText("#ownership-bridge-code", bridge.ownership);
 })();

@@ -5,6 +5,10 @@ import { runInNewContext } from "node:vm";
 const root = resolve(import.meta.dirname, "..");
 const entry = readFileSync(resolve(root, "index.html"), "utf8");
 const html = readFileSync(resolve(root, "docs/index.html"), "utf8");
+const modulePages = Object.fromEntries(["02", "03", "04"].map((number) => [
+  number,
+  readFileSync(resolve(root, `docs/modules/${number}/index.html`), "utf8")
+]));
 const css = readFileSync(resolve(root, "docs/assets/styles.css"), "utf8");
 const profileScript = readFileSync(resolve(root, "docs/assets/profile.js"), "utf8");
 const failures = [];
@@ -12,6 +16,21 @@ const failures = [];
 const requireMatch = (condition, message) => {
   if (!condition) failures.push(message);
 };
+
+const validateDocument = (source, label) => {
+  const documentIds = [...source.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
+  const duplicates = documentIds.filter((id, index) => documentIds.indexOf(id) !== index);
+  requireMatch(duplicates.length === 0, `${label} duplicate ids: ${[...new Set(duplicates)].join(", ")}`);
+  const fragments = [...source.matchAll(/href="#([^"]+)"/g)].map((match) => match[1]);
+  const missing = fragments.filter((fragment) => !documentIds.includes(fragment));
+  requireMatch(missing.length === 0, `${label} missing fragment targets: ${[...new Set(missing)].join(", ")}`);
+  requireMatch(source.includes('name="viewport"'), `${label} needs viewport metadata`);
+  requireMatch(source.includes("Skip to lesson"), `${label} needs a skip link`);
+  requireMatch(source.includes('aria-label="Mobile course navigation"'), `${label} needs accessible mobile navigation`);
+};
+
+validateDocument(html, "Module 1");
+for (const [number, page] of Object.entries(modulePages)) validateDocument(page, `Module ${number}`);
 
 const ids = [...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]);
 const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
@@ -31,6 +50,31 @@ requireMatch(missingEntryFragments.length === 0, `Missing entry-page fragment ta
 
 for (const asset of ["docs/assets/styles.css", "docs/assets/app.js", "docs/assets/profile.js", "docs/.nojekyll"]) {
   requireMatch(existsSync(resolve(root, asset)), `Missing site asset: ${asset}`);
+}
+
+for (const [number, page] of Object.entries(modulePages)) {
+  requireMatch(page.includes("data-course-page"), `Module ${number} must activate profile adaptation`);
+  requireMatch(page.includes('id="adjust-path"'), `Module ${number} must let learners adjust their path`);
+  for (const language of ["python", "java", "javascript"]) {
+    requireMatch(page.includes(`data-language-panel="${language}"`), `Module ${number} is missing its ${language} bridge`);
+  }
+}
+
+const moduleContracts = {
+  "02": ["E0004", "Delivery::Sending { percent: 40 }", "sending: 40%"],
+  "03": ["E0277", "T: Summary", "Incident INC-42: checkout unavailable"],
+  "04": ["E0277", "Rc::new(Mutex::new(Vec::new()))", 'Events: ["worker complete"]']
+};
+for (const [number, required] of Object.entries(moduleContracts)) {
+  for (const text of required) requireMatch(modulePages[number].includes(text), `Module ${number} content missing: ${text}`);
+}
+
+for (const module of ["02-enums", "03-traits", "04-smart-pointers"]) {
+  for (const file of ["lesson.md", "examples.rs", "challenge.md", "challenge.template.rs", "reflection.template.md"]) {
+    requireMatch(existsSync(resolve(root, `modules/${module}/${file}`)), `Missing course file: modules/${module}/${file}`);
+  }
+  requireMatch(!existsSync(resolve(root, `modules/${module}/challenge.rs`)), `Learner attempt must remain local-only: ${module}/challenge.rs`);
+  requireMatch(!existsSync(resolve(root, `modules/${module}/reflection.md`)), `Learner reflection must remain local-only: ${module}/reflection.md`);
 }
 
 requireMatch(entry.includes('id="profile-form"'), "Root Pages entry point must contain the course builder");
@@ -166,4 +210,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`Site validation passed: ${ids.length} unique ids, ${fragmentLinks.length} internal links, challenge integrity preserved.`);
+console.log(`Site validation passed: four responsive modules, three language bridges, and challenge integrity preserved.`);

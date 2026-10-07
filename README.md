@@ -21,9 +21,9 @@ The course uses one canonical Rust curriculum. The profile adapts comparison cod
 | Module | Focus | State |
 | --- | --- | --- |
 | [1 — Foundations and ownership](modules/01-ownership/lesson.md) | Syntax, variables, common methods, functions, ownership, borrowing | Ready; challenge pending |
-| 2 — Enums and pattern matching | Option, Result, exhaustive matching, `?` | Upcoming |
-| 3 — Traits and generics | Data/behavior separation, bounds, static dispatch | Upcoming |
-| 4 — Smart pointers | Box, Rc, Arc, RefCell, Mutex | Upcoming |
+| [2 — Enums and pattern matching](modules/02-enums/lesson.md) | Option, Result, exhaustive matching, `?` | Ready; challenge pending |
+| [3 — Traits and generics](modules/03-traits/lesson.md) | Data/behavior separation, bounds, static dispatch | Ready; challenge pending |
+| [4 — Smart pointers](modules/04-smart-pointers/lesson.md) | Box, Rc, Arc, RefCell, Mutex, Send, Sync | Ready; challenge pending |
 
 We develop and review one module at a time. Each ends with broken Rust code; solutions are withheld until you submit an attempt or explicitly ask for one.
 
@@ -37,22 +37,23 @@ We develop and review one module at a time. Each ends with broken Rust code; sol
 
 Reviews inspect your actual files, validate behavior where tooling is available, and update a local progress file that is intentionally excluded from the public repository. Completion requires working code and an accurate explanation, not merely suppressing the compiler error.
 
-## Running Module 1
+## Running a module
 
 Learner attempts and reflections are local-only. On a fresh clone, create them from the public templates:
 
 ```bash
-cp -n modules/01-ownership/challenge.template.rs modules/01-ownership/challenge.rs
-cp -n modules/01-ownership/reflection.template.md modules/01-ownership/reflection.md
+MODULE=02-enums # or 01-ownership, 03-traits, 04-smart-pointers
+cp -n "modules/$MODULE/challenge.template.rs" "modules/$MODULE/challenge.rs"
+cp -n "modules/$MODULE/reflection.template.md" "modules/$MODULE/reflection.md"
 ```
 
 Requires `rustc`; no dependencies or Cargo workspace are needed yet. On a normal installation with a system linker, run from this folder:
 
 ```bash
 mkdir -p /tmp/oxido-rust
-rustc --edition=2024 modules/01-ownership/examples.rs -o /tmp/oxido-rust/examples
+rustc --edition=2024 "modules/$MODULE/examples.rs" -o /tmp/oxido-rust/examples
 /tmp/oxido-rust/examples
-rustc --edition=2024 modules/01-ownership/challenge.rs -o /tmp/oxido-rust/challenge
+rustc --edition=2024 "modules/$MODULE/challenge.rs" -o /tmp/oxido-rust/challenge
 # After fixing the challenge:
 /tmp/oxido-rust/challenge
 ```
@@ -63,6 +64,6 @@ In the hosted course workspace, Debian system packages are restricted. Rust's of
 
 ```bash
 rustc --edition=2024 --target x86_64-unknown-linux-musl -C linker=rust-lld \
-  modules/01-ownership/examples.rs -o /tmp/oxido-rust/examples
+  "modules/$MODULE/examples.rs" -o /tmp/oxido-rust/examples
 /tmp/oxido-rust/examples
 ```
